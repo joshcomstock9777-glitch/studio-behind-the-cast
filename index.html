@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080a0f" />
+    <title>Moonshadow Bridge</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MOONSHADOW STUDIO</p>
+          <h1>The Bridge</h1>
+          <p class="subtitle">Live coordination, checkpoints, and handoffs</p>
+        </div>
+        <div class="connection-card" aria-live="polite">
+          <span class="status-dot offline"></span>
+          <div>
+            <strong>LOCAL PROTOTYPE</strong>
+            <span>Backend and Brain: not connected</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="dashboard-grid">
+        <aside class="panel crew-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">DOORWAY</p>
+              <h2>Crew status</h2>
+            </div>
+            <span class="count" id="active-count">0 active</span>
+          </div>
+          <div id="crew-list" class="crew-list"></div>
+          <p class="truth-note">No worker is verified until all seven doorway tests pass.</p>
+          <div class="brain-card">
+            <div class="brain-title"><span>Brain snapshot</span><strong id="brain-version">Loading…</strong></div>
+            <p id="brain-summary">Reading the repository Brain…</p>
+            <span id="brain-loaded" class="brain-state">NOT LOADED</span>
+          </div>
+        </aside>
+
+        <section class="panel bridge-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LIVE ROOM</p>
+              <h2>Bridge feed</h2>
+            </div>
+            <button class="ghost-button" id="clear-feed" type="button">Clear local feed</button>
+          </div>
+
+          <div id="bridge-feed" class="bridge-feed" aria-live="polite"></div>
+
+          <form id="message-form" class="message-form">
+            <label>
+              Sender
+              <select id="message-sender" required></select>
+            </label>
+            <label class="message-field">
+              Message
+              <textarea id="message-text" rows="2" maxlength="700" placeholder="Leave a direct Bridge message…" required></textarea>
+            </label>
+            <button class="primary-button" type="submit">Send locally</button>
+          </form>
+        </section>
+
+        <aside class="panel checkpoint-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">PROOF OF SYNC</p>
+              <h2>Checkpoint</h2>
+            </div>
+          </div>
+
+          <form id="checkpoint-form" class="checkpoint-form">
+            <label>Name<input id="cp-name" value="AMBER" required /></label>
+            <label>Role<input id="cp-role" value="Studio & Social Media Manager" required /></label>
+            <label>Task<input id="cp-task" value="Restore the Bridge" required /></label>
+            <label>Status
+              <select id="cp-status">
+                <option>ACTIVE</option>
+                <option>BLOCKED</option>
+                <option>WAITING</option>
+                <option>COMPLETE</option>
+              </select>
+            </label>
+            <label>Last action<textarea id="cp-last" rows="2" required></textarea></label>
+            <label>Blocker<textarea id="cp-blocker" rows="2" required></textarea></label>
+            <label>Next action<textarea id="cp-next" rows="2" required></textarea></label>
+            <label class="check-row"><input id="cp-brain" type="checkbox" /> Brain updated</label>
+            <button class="primary-button" type="submit">Post local checkpoint</button>
+          </form>
+        </aside>
+      </section>
+
+      <footer>
+        <span>Brain carries continuity.</span>
+        <span>Bridge carries live communication.</span>
+        <span id="last-local-save">Local save: none</span>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
