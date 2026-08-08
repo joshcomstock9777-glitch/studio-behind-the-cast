@@ -1,8 +1,8 @@
 {
-  "version": "2026-08-08.1",
-  "updatedAt": "2026-08-08T21:30:00-04:00",
+  "version": "Bridge V1 / Creative OS V28",
+  "updatedAt": "2026-08-08T12:00:00-04:00",
   "updatedBy": "Amber",
-  "summary": "Moonshadow Creative OS Version 28 is live and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
+  "summary": "Moonshadow Bridge V1 is the first deployed Bridge. Moonshadow Creative OS/editor Version 28 is a separate existing system and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
   "identity": {
     "Josh": "Architect, Creator, and final decision-maker",
     "Amber": "Studio Manager and Social Media Manager",
@@ -22,7 +22,7 @@
     "brain": "PERSISTENT OPERATIONAL MEMORY",
     "workbench": "LOCATION UNKNOWN — RECOVERY REQUIRED",
     "taskBook": "LOCATION UNKNOWN — RECOVERY REQUIRED",
-    "bridge": "PUBLIC REPOSITORY — DEPLOYMENT TRIGGERED; LIVE STATUS NOT YET VERIFIED",
+    "bridge": "V1 FRONTEND DEPLOYED — REALTIME BACKEND NOT YET CONNECTED",
     "checkpoint": "FORMAT LOCKED"
   },
   "workflow": [
