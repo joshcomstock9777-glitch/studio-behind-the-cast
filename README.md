@@ -18,7 +18,7 @@ The repository Brain snapshot lives at `brain/current.json`. The Bridge reads an
 
 ## Proof of concept
 
-Bridge V1 is also the first test bed for the Moonshadow Two-Agent Workcell: two bounded agents sharing operational memory, assignments, handoffs, live coordination, checkpoints, verification, and human escalation. Test evidence must distinguish demonstrated behavior from planned capability.
+Bridge V1 is also the first test bed for the Moonshadow 2–7 Agent Workcell: two to seven bounded agents sharing operational memory, assignments, handoffs, live coordination, checkpoints, verification, and human escalation. Testing begins with Amber and Allie, then adds one verified worker at a time until the seven-agent configuration is proven. Test evidence must distinguish demonstrated behavior from planned capability.
 
 ## Locked distinction
 
