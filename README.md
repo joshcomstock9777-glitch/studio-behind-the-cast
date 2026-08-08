@@ -1,6 +1,6 @@
-# Moonshadow Bridge
+# Moonshadow Bridge V1
 
-The visible coordination surface for Moonshadow Studio.
+The first deployed coordination surface for Moonshadow Studio. Bridge V1 is separate from Moonshadow Creative OS/editor Version 28.
 
 ## Current state
 
