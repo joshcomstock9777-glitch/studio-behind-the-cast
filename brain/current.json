@@ -48,9 +48,12 @@
     "Allie": ["Continue Moonshadow Creative OS Version 28", "Diagnose and restore Collaborator AI without rebuilding the site"]
   },
   "proofOfConcept": {
-    "name": "Two-Agent Workcell",
-    "objective": "Prove that two bounded agents can coordinate through shared operational memory, assignments, handoffs, live messages, checkpoints, verification, and human escalation without drifting from the Architect's parameters.",
+    "name": "2–7 Agent Workcell",
+    "objective": "Prove that two to seven bounded agents can coordinate through shared operational memory, assignments, handoffs, live messages, checkpoints, verification, and human escalation without drifting from the Architect's parameters.",
+    "minimumAgents": 2,
+    "maximumAgents": 7,
     "firstPair": ["Amber", "Allie"],
+    "scaleRule": "Pass the complete protocol with two agents first, then add one verified worker at a time until the seven-agent workcell is proven.",
     "evidenceRequired": [
       "Both workers pass the seven-step doorway protocol",
       "A real assignment is divided without duplicated ownership",
@@ -60,6 +63,6 @@
       "The final output matches Josh's acceptance criteria",
       "Failures, corrections, and timing are preserved as test evidence"
     ],
-    "status": "APPROVED — TESTING NOT YET STARTED"
+    "status": "APPROVED FOR 2–7 AGENTS — TWO-AGENT TESTING NOT YET STARTED"
   }
 }
