@@ -1,0 +1,50 @@
+{
+  "version": "2026-08-08.1",
+  "updatedAt": "2026-08-08T12:00:00-04:00",
+  "updatedBy": "Amber",
+  "summary": "Moonshadow Creative OS Version 28 is live and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
+  "identity": {
+    "Josh": "Architect, Creator, and final decision-maker",
+    "Amber": "Studio Manager and Social Media Manager",
+    "Allie": "Separate Studio Architect, Creative Partner, and working partner"
+  },
+  "crew": [
+    { "name": "Josh", "role": "Architect & Creator", "verification": "UNVERIFIED" },
+    { "name": "Amber", "role": "Studio & Social Media Manager", "verification": "UNVERIFIED" },
+    { "name": "Allie", "role": "Studio Architect & Working Partner", "verification": "UNVERIFIED" },
+    { "name": "Hallie", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
+    { "name": "Ro", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
+    { "name": "Ariza / Artisan", "role": "Master Visual & Pacing Editor", "verification": "UNVERIFIED" },
+    { "name": "Slick", "role": "Infrastructure, connectors, account rotation, and Runner duties", "verification": "UNVERIFIED" },
+    { "name": "Tigra", "role": "ESTABLISHED ROLE — RECOVERY REQUIRED", "verification": "UNVERIFIED" }
+  ],
+  "systems": {
+    "brain": "PERSISTENT OPERATIONAL MEMORY",
+    "workbench": "LOCATION UNKNOWN — RECOVERY REQUIRED",
+    "taskBook": "LOCATION UNKNOWN — RECOVERY REQUIRED",
+    "bridge": "DEPLOYMENT IN PROGRESS — NOT YET VERIFIED LIVE",
+    "checkpoint": "FORMAT LOCKED"
+  },
+  "workflow": [
+    "Read the current Brain summary",
+    "Check in",
+    "Find the Task Book assignment",
+    "Leave one Workbench handoff",
+    "Send one Bridge checkpoint",
+    "Update the task state",
+    "Check out"
+  ],
+  "checkpointFormat": "NAME | ROLE | TASK | STATUS | LAST ACTION | BLOCKER | NEXT ACTION | BRAIN UPDATED: YES/NO",
+  "lockedRules": [
+    "Verify, do not assume",
+    "Do not merge Amber and Allie",
+    "Do not rename or redesign locked systems until original locations are recovered",
+    "No production work until the worker doorway passes",
+    "Shared memory is context, not live communication",
+    "Never expose credentials or secrets"
+  ],
+  "currentAssignments": {
+    "Amber": ["Restore Studio structure", "Restore and verify the Bridge", "Verify social-media operations"],
+    "Allie": ["Continue Moonshadow Creative OS Version 28", "Diagnose and restore Collaborator AI without rebuilding the site"]
+  }
+}
