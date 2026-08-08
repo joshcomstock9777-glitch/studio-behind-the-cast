@@ -16,6 +16,10 @@ Messages are currently stored only in the browser's local storage. They are not 
 
 The repository Brain snapshot lives at `brain/current.json`. The Bridge reads and displays that snapshot on load. This proves that the published screen and repository Brain artifact are connected; it does not yet prove realtime write synchronization or autonomous access by separate ChatGPT threads.
 
+## Proof of concept
+
+Bridge V1 is also the first test bed for the Moonshadow Two-Agent Workcell: two bounded agents sharing operational memory, assignments, handoffs, live coordination, checkpoints, verification, and human escalation. Test evidence must distinguish demonstrated behavior from planned capability.
+
 ## Locked distinction
 
 - **Brain:** persistent operational memory
