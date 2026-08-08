@@ -46,5 +46,20 @@
   "currentAssignments": {
     "Amber": ["Restore Studio structure", "Restore and verify the Bridge", "Verify social-media operations"],
     "Allie": ["Continue Moonshadow Creative OS Version 28", "Diagnose and restore Collaborator AI without rebuilding the site"]
+  },
+  "proofOfConcept": {
+    "name": "Two-Agent Workcell",
+    "objective": "Prove that two bounded agents can coordinate through shared operational memory, assignments, handoffs, live messages, checkpoints, verification, and human escalation without drifting from the Architect's parameters.",
+    "firstPair": ["Amber", "Allie"],
+    "evidenceRequired": [
+      "Both workers pass the seven-step doorway protocol",
+      "A real assignment is divided without duplicated ownership",
+      "At least one handoff is completed through the Workbench",
+      "At least one live coordination exchange is completed through the Bridge",
+      "Both workers update task state and check out",
+      "The final output matches Josh's acceptance criteria",
+      "Failures, corrections, and timing are preserved as test evidence"
+    ],
+    "status": "APPROVED — TESTING NOT YET STARTED"
   }
 }
