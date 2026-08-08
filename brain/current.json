@@ -1,6 +1,6 @@
 {
   "version": "2026-08-08.1",
-  "updatedAt": "2026-08-08T12:00:00-04:00",
+  "updatedAt": "2026-08-08T21:30:00-04:00",
   "updatedBy": "Amber",
   "summary": "Moonshadow Creative OS Version 28 is live and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
   "identity": {
@@ -22,7 +22,7 @@
     "brain": "PERSISTENT OPERATIONAL MEMORY",
     "workbench": "LOCATION UNKNOWN — RECOVERY REQUIRED",
     "taskBook": "LOCATION UNKNOWN — RECOVERY REQUIRED",
-    "bridge": "DEPLOYMENT IN PROGRESS — NOT YET VERIFIED LIVE",
+    "bridge": "PUBLIC REPOSITORY — DEPLOYMENT TRIGGERED; LIVE STATUS NOT YET VERIFIED",
     "checkpoint": "FORMAT LOCKED"
   },
   "workflow": [
