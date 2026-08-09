@@ -47,14 +47,16 @@ async function connect(){
   const app=initializeApp(window.__FIREBASE_CONFIG__);const auth=getAuth(app);db=getDatabase(app);
   onAuthStateChanged(auth,async current=>{
     if(!current)return;user=current;
-    const presence=ref(db,`${ROOT}/presence/${sessionId}`);
-    await onDisconnect(presence).remove();
-    await set(presence,{uid:user.uid,online:true,connectedAt:serverTimestamp()});
-    setStatus("V2 QUEUE CONNECTED","Isolated Firebase namespace authenticated",true);
-    if(listenersStarted)return;listenersStarted=true;
-    onValue(ref(db,".info/connected"),snapshot=>setStatus(snapshot.val()?"V2 QUEUE CONNECTED":"RECONNECTING",snapshot.val()?"Isolated Firebase namespace authenticated":"Waiting for Firebase…",Boolean(snapshot.val())));
-    onChildAdded(query(ref(db,`${ROOT}/requests`),limitToLast(100)),snapshot=>{requests.set(snapshot.key,{key:snapshot.key,...snapshot.val()});render();stamp();});
-    onChildAdded(query(ref(db,`${ROOT}/responses`),limitToLast(100)),snapshot=>{const value=snapshot.val();if(value?.correlationId)responses.set(value.correlationId,{key:snapshot.key,...value});render();stamp();});
+    try{
+      const presence=ref(db,`${ROOT}/presence/${sessionId}`);
+      await onDisconnect(presence).remove();
+      await set(presence,{uid:user.uid,online:true,connectedAt:serverTimestamp()});
+      setStatus("V2 QUEUE CONNECTED","Isolated Firebase namespace authenticated",true);
+      if(listenersStarted)return;listenersStarted=true;
+      onValue(ref(db,".info/connected"),snapshot=>setStatus(snapshot.val()?"V2 QUEUE CONNECTED":"RECONNECTING",snapshot.val()?"Isolated Firebase namespace authenticated":"Waiting for Firebase…",Boolean(snapshot.val())));
+      onChildAdded(query(ref(db,`${ROOT}/requests`),limitToLast(100)),snapshot=>{requests.set(snapshot.key,{key:snapshot.key,...snapshot.val()});render();stamp();},error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+      onChildAdded(query(ref(db,`${ROOT}/responses`),limitToLast(100)),snapshot=>{const value=snapshot.val();if(value?.correlationId)responses.set(value.correlationId,{key:snapshot.key,...value});render();stamp();},error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+    }catch(error){setStatus("V2 BACKEND BLOCKED",error.message,false);}
   });
   await signInAnonymously(auth);
 }
