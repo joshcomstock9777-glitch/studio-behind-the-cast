@@ -1,6 +1,6 @@
 {
   "version": "Bridge V1 / Creative OS V28",
-  "updatedAt": "2026-08-08T12:00:00-04:00",
+  "updatedAt": "2026-08-08T20:38:00-04:00",
   "updatedBy": "Amber",
   "summary": "Moonshadow Bridge V1 is the first deployed Bridge. Moonshadow Creative OS/editor Version 28 is a separate existing system and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
   "identity": {
@@ -22,7 +22,7 @@
     "brain": "PERSISTENT OPERATIONAL MEMORY",
     "workbench": "LOCATION UNKNOWN — RECOVERY REQUIRED",
     "taskBook": "LOCATION UNKNOWN — RECOVERY REQUIRED",
-    "bridge": "V1 FRONTEND DEPLOYED — REALTIME BACKEND NOT YET CONNECTED",
+    "bridge": "V1 REALTIME TRANSPORT OPERATIONAL — MESSAGE, CHECKPOINT, PRESENCE, AND SECOND-SESSION RETURN PATH PROVEN; WORKER DOORWAYS NOT YET VERIFIED",
     "checkpoint": "FORMAT LOCKED"
   },
   "workflow": [
@@ -63,6 +63,17 @@
       "The final output matches Josh's acceptance criteria",
       "Failures, corrections, and timing are preserved as test evidence"
     ],
-    "status": "APPROVED FOR 2–7 AGENTS — TWO-AGENT TESTING NOT YET STARTED"
+    "status": "REALTIME TRANSPORT TEST PASSED — AMBER/ALLIE SEVEN-STEP DOORWAY TEST NOT YET STARTED"
+  },
+  "bridgeProof": {
+    "testedAt": "2026-08-08T20:37:00-04:00",
+    "testedBy": "Amber",
+    "messageWrite": "PASSED",
+    "messageReturn": "PASSED",
+    "checkpointWrite": "PASSED",
+    "secondSessionRead": "PASSED",
+    "presence": "PASSED",
+    "allieDoorway": "NOT TESTED",
+    "workerVerification": "ALL WORKERS REMAIN UNVERIFIED"
   }
 }
