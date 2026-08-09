@@ -18,8 +18,8 @@
         <div class="connection-card" aria-live="polite">
           <span class="status-dot offline"></span>
           <div>
-            <strong>LOCAL PROTOTYPE</strong>
-            <span>Backend and Brain: not connected</span>
+            <strong id="connection-title">CONNECTING</strong>
+            <span id="connection-detail">Authenticating with the Bridge backend…</span>
           </div>
         </div>
       </header>
@@ -48,7 +48,7 @@
               <p class="eyebrow">LIVE ROOM</p>
               <h2>Bridge feed</h2>
             </div>
-            <button class="ghost-button" id="clear-feed" type="button">Clear local feed</button>
+            <button class="ghost-button" id="refresh-feed" type="button">Refresh feed</button>
           </div>
 
           <div id="bridge-feed" class="bridge-feed" aria-live="polite"></div>
@@ -62,7 +62,7 @@
               Message
               <textarea id="message-text" rows="2" maxlength="700" placeholder="Leave a direct Bridge message…" required></textarea>
             </label>
-            <button class="primary-button" type="submit">Send locally</button>
+            <button class="primary-button" type="submit">Send to Bridge</button>
           </form>
         </section>
 
@@ -90,7 +90,7 @@
             <label>Blocker<textarea id="cp-blocker" rows="2" required></textarea></label>
             <label>Next action<textarea id="cp-next" rows="2" required></textarea></label>
             <label class="check-row"><input id="cp-brain" type="checkbox" /> Brain updated</label>
-            <button class="primary-button" type="submit">Post local checkpoint</button>
+            <button class="primary-button" type="submit">Post checkpoint</button>
           </form>
         </aside>
       </section>
@@ -98,9 +98,10 @@
       <footer>
         <span>Brain carries continuity.</span>
         <span>Bridge carries live communication.</span>
-        <span id="last-local-save">Local save: none</span>
+        <span id="last-sync">Bridge sync: waiting</span>
       </footer>
     </main>
-    <script src="app.js"></script>
+    <script src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
