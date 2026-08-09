@@ -33,6 +33,7 @@ const statusDot = document.querySelector(".status-dot");
 const entries = [];
 let database;
 let currentUser;
+let realtimeStarted = false;
 
 function setConnection(title, detail, online = false) {
   connectionTitle.textContent = title;
@@ -153,24 +154,32 @@ async function connectBridge() {
     await onDisconnect(presenceRef).remove();
     await set(presenceRef, { online: true, connectedAt: serverTimestamp() });
     setConnection("BRIDGE CONNECTED", "Realtime backend authenticated", true);
-  });
 
-  const connectedRef = ref(database, ".info/connected");
-  onValue(connectedRef, snapshot => {
-    if (!snapshot.val()) setConnection("RECONNECTING", "Waiting for Firebase…", false);
-  });
+    if (realtimeStarted) return;
+    realtimeStarted = true;
 
-  const presenceQuery = ref(database, "bridge/v1/presence");
-  onValue(presenceQuery, snapshot => {
-    const active = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-    document.querySelector("#active-count").textContent = `${active} active`;
-  });
+    const connectedRef = ref(database, ".info/connected");
+    onValue(connectedRef, snapshot => {
+      if (snapshot.val()) {
+        setConnection("BRIDGE CONNECTED", "Realtime backend authenticated", true);
+      } else {
+        setConnection("RECONNECTING", "Waiting for Firebase…", false);
+      }
+    });
 
-  const feedQuery = query(ref(database, "bridge/v1/entries"), limitToLast(100));
-  onChildAdded(feedQuery, snapshot => {
-    entries.push({ id: snapshot.key, ...snapshot.val() });
-    if (entries.length > 100) entries.shift();
-    render();
+    const presenceQuery = ref(database, "bridge/v1/presence");
+    onValue(presenceQuery, snapshot => {
+      const active = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+      document.querySelector("#active-count").textContent = `${active} active`;
+    });
+
+    const feedQuery = query(ref(database, "bridge/v1/entries"), limitToLast(100));
+    onChildAdded(feedQuery, snapshot => {
+      entries.push({ id: snapshot.key, ...snapshot.val() });
+      if (entries.length > 100) entries.shift();
+      render();
+      lastSync.textContent = `Bridge sync: ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+    });
   });
 
   await signInAnonymously(auth);
