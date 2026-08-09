@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0b10" />
+  <title>Moonshadow Wake Bridge V2</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">MOONSHADOW STUDIO · ISOLATED POC</p>
+        <h1>Wake Bridge <span>V2</span></h1>
+        <p class="sub">Persistent-worker request queue · V1 remains untouched</p>
+      </div>
+      <div class="status" aria-live="polite">
+        <i id="status-dot"></i>
+        <div><strong id="status-title">CONNECTING</strong><small id="status-detail">Opening isolated queue…</small></div>
+      </div>
+    </header>
+
+    <section class="truth" id="truth-banner">
+      <strong>RELAY NOT YET VERIFIED</strong>
+      <span>Requests can be queued here. An automatic AI response is operational only after a server worker passes both end-to-end tests.</span>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <p class="eyebrow">ROUTE</p>
+        <h2>Wake request</h2>
+        <form id="wake-form">
+          <label>From<select id="sender"><option>Josh</option><option>Amber</option><option>Allie</option></select></label>
+          <label>Wake<select id="target"><option>Allie</option><option>Amber</option></select></label>
+          <label>Message<textarea id="message" maxlength="1200" rows="7" placeholder="What should the worker do?" required></textarea></label>
+          <button id="send" type="submit">Send wake request</button>
+        </form>
+        <dl>
+          <div><dt>Namespace</dt><dd>bridge/wake-poc/v1</dd></div>
+          <div><dt>Session</dt><dd id="session-id">—</dd></div>
+          <div><dt>Last sync</dt><dd id="last-sync">Waiting</dd></div>
+        </dl>
+      </aside>
+
+      <section class="panel feed-panel">
+        <div class="panel-head"><div><p class="eyebrow">LIVE EVIDENCE</p><h2>Request timeline</h2></div><span id="request-count">0 requests</span></div>
+        <div id="feed" class="feed"><p class="empty">Waiting for the first isolated V2 request.</p></div>
+      </section>
+    </section>
+
+    <footer>Every request carries a correlation ID. Responses must match it exactly. No secrets belong in this Bridge.</footer>
+  </main>
+  <script src="../firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
