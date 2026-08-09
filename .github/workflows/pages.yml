@@ -23,6 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Build Firebase runtime configuration
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: |
+          test -n "$FIREBASE_CONFIG"
+          printf '%s\n' "$FIREBASE_CONFIG" > firebase-config.js
+          printf '\nwindow.__FIREBASE_CONFIG__ = firebaseConfig;\n' >> firebase-config.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
