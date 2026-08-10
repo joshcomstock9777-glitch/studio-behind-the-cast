@@ -1,0 +1,17 @@
+{
+  "name": "moonshadow-wake-relay-poc-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker – Moonshadow Wake Relay POC scheduled queue consumer",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test:ci": "node --experimental-vm-modules node_modules/.bin/jest --ci"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

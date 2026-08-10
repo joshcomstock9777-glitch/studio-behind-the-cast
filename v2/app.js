@@ -3,7 +3,6 @@ import{getAuth,onAuthStateChanged,signInAnonymously}from"https://www.gstatic.com
 import{getDatabase,limitToLast,onChildAdded,onChildChanged,onDisconnect,onValue,push,query,ref,serverTimestamp,set,update}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
 const ROOT="bridge/wake-poc/v1";
-const WORKER_URL="https://moonshadow-wake-relay-poc.joshcomstock9777.workers.dev";
 const requests=new Map(),responses=new Map();
 const sessionId=crypto.randomUUID();
 let db,user,listenersStarted=false;
@@ -39,50 +38,9 @@ async function sendRequest(message,sender,target){
     uid:user.uid,createdAt:Date.now(),serverCreatedAt:serverTimestamp(),schemaVersion:1
   });
 
-  try{
-    await update(requestRef,{status:"processing",processingAt:Date.now()});
-
-    const workerResponse=await fetch(WORKER_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({correlationId,sender,target,message,schemaVersion:1})
-    });
-
-    const result=await workerResponse.json().catch(()=>({}));
-    if(!workerResponse.ok||!result.ok){
-      throw new Error(result.error||`Worker failed with status ${workerResponse.status}`);
-    }
-    if(result.correlationId!==correlationId){
-      throw new Error("Worker returned a mismatched correlation ID.");
-    }
-
-    await push(ref(db,`${ROOT}/responses`),{
-      correlationId,
-      requestKey:requestRef.key,
-      worker:result.worker||target,
-      message:result.message,
-      model:result.model||"unknown",
-      status:"completed",
-      createdAt:result.createdAt||Date.now(),
-      serverCreatedAt:serverTimestamp(),
-      schemaVersion:1
-    });
-
-    await update(requestRef,{
-      status:"completed",
-      completedAt:Date.now(),
-      serverCompletedAt:serverTimestamp()
-    });
-
-    return correlationId;
-  }catch(error){
-    await update(requestRef,{
-      status:"failed",
-      failedAt:Date.now(),
-      error:String(error?.message||error).slice(0,240)
-    }).catch(()=>{});
-    throw error;
-  }
+  // The scheduled Cloudflare Worker polls Firebase and processes queued requests
+  // automatically. No direct HTTP call is needed from the frontend.
+  return correlationId;
 }
 
 el("wake-form").addEventListener("submit",async event=>{
@@ -90,11 +48,11 @@ el("wake-form").addEventListener("submit",async event=>{
   const button=el("send"),message=el("message").value.trim();
   if(!message)return;
   button.disabled=true;
-  setStatus("WORKER PROCESSING","Request queued · calling API worker",true);
+  setStatus("REQUEST QUEUED","Written to Firebase · scheduled worker will process",true);
   try{
     const id=await sendRequest(message,el("sender").value,el("target").value);
     el("message").value="";
-    setStatus("RESPONSE RETURNED",`Correlation ${id.slice(0,8)} · completed`,true);
+    setStatus("REQUEST QUEUED",`Correlation ${id.slice(0,8)} · awaiting scheduled worker`,true);
   }catch(error){
     setStatus("WAKE RELAY FAILED",error.message,false);
     alert(`Wake request failed: ${error.message}`);
