@@ -1,0 +1,11 @@
+name = "moonshadow-path-allie-gen1"
+main = "src/allie.ts"
+compatibility_date = "2026-08-10"
+workers_dev = false
+
+[ai]
+binding = "AI"
+
+[vars]
+AI_MODEL = "REPLACE_WITH_VERIFIED_FREE_WORKERS_AI_MODEL"
+SOURCE_VERSION = "gen1-local-review"
