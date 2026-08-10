@@ -1,6 +1,6 @@
 {
   "version": "Bridge V1 / Creative OS V28",
-  "updatedAt": "2026-08-08T20:38:00-04:00",
+  "updatedAt": "2026-08-10T06:53:27+00:00",
   "updatedBy": "Amber",
   "summary": "Moonshadow Bridge V1 is the first deployed Bridge. Moonshadow Creative OS/editor Version 28 is a separate existing system and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
   "identity": {
@@ -75,5 +75,28 @@
     "presence": "PASSED",
     "allieDoorway": "NOT TESTED",
     "workerVerification": "ALL WORKERS REMAIN UNVERIFIED"
-  }
+  },
+  "corrections": [
+    {
+      "datedAt": "2026-08-10T06:53:27Z",
+      "recordedBy": "Amber",
+      "commit": "01961801ce80e4c9e8f7ef387f17eefc5bf04e27",
+      "deploymentRun": 31341668398,
+      "verifiedFacts": [
+        "V2 frontend deployed",
+        "V2 isolated Firebase configuration still points at moonshadow-wake-relay-poc",
+        "Anonymous authentication is enabled in the V2 client"
+      ],
+      "blockedOrUnverified": [
+        "Direct live V2 page verification was blocked in this session",
+        "Queue write/read test could not be completed in this session",
+        "Automatic API worker was not verified as connected",
+        "V1 live-runtime confirmation was not completed in this session"
+      ],
+      "evidence": [
+        "GitHub Actions workflow run 31341668398 completed successfully for commit 01961801ce80e4c9e8f7ef387f17eefc5bf04e27",
+        "Repository files show v2/firebase-config.js and v2/index.html loading the isolated V2 configuration"
+      ]
+    }
+  ]
 }

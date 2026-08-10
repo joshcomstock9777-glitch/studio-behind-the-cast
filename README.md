@@ -27,3 +27,11 @@ Bridge V1 is also the first test bed for the Moonshadow 2–7 Agent Workcell: tw
 - **Checkpoint:** proof that a worker is active and synchronized
 
 The Bridge must not impersonate the Brain or report a planned connection as operational.
+
+## 2026-08-10 correction
+
+- Verified deployment evidence: GitHub Actions workflow run `31341668398` for commit `01961801ce80e4c9e8f7ef387f17eefc5bf04e27` completed successfully.
+- Verified repository state: V2 frontend is deployed from the `main` branch and still loads its isolated Firebase configuration from `v2/firebase-config.js`.
+- Direct live V2 queue testing was blocked in this session because the browser MCP was unavailable and outbound DNS to the GitHub Pages host was unavailable.
+- Queue write/read evidence, second-session live readback, and V1 live-runtime confirmation remain unverified here.
+- No automatic API worker was verified in this session.
