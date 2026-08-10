@@ -184,8 +184,13 @@ export async function callGitHubModels(token, target, message) {
       `GitHub Models ${res.status}: ${text.slice(0, 240)}`,
     );
 
-    // Do not retry auth or client-side errors.
-    if (res.status === 400 || res.status === 401 || res.status === 403) break;
+    // Do not retry auth, client-side, or rate-limit errors.
+    if (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 429) break;
+
+    // Brief pause before retry to reduce thundering-herd on transient failures.
+    if (attempt < MAX_RETRIES) {
+      await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+    }
   }
 
   throw lastError;
@@ -346,9 +351,6 @@ export default {
 
   /** HTTP handler. */
   async fetch(request, env) {
-    const url = new URL(request.url);
-    void url;
-
     // ── GET / – health check ──────────────────────────────────────────────
     if (request.method === "GET") {
       return Response.json({

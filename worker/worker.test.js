@@ -195,6 +195,16 @@ describe("callGitHubModels – API headers", () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  test("does not retry on 429 rate limit", async () => {
+    global.fetch = jest.fn().mockResolvedValue(
+      makeResponse("Rate limit", 429),
+    );
+    await expect(callGitHubModels("token", "Allie", "hello")).rejects.toThrow(
+      "429",
+    );
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   test("throws when API returns empty choices", async () => {
     global.fetch = jest.fn().mockResolvedValue(
       makeResponse({ choices: [] }),
