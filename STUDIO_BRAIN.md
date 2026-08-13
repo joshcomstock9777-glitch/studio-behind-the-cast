@@ -69,7 +69,7 @@ The proof-of-concept operating chain is:
 2. **Amber** receives inbound calls, texts, and emails, then routes work.
 3. **Artisa / editor** performs final edit, continuity, and quality review.
 4. **Slick / publisher** packages, double-checks, and releases the work.
-5. **Social media manager** drafts and manages outbound responses.
+5. **Tigra / social media manager** drafts and manages outbound responses.
 6. **The Scout / runner** gathers free tools, APIs, and resources.
 7. **Marketer** finds free distribution and outreach opportunities.
 

@@ -17,10 +17,10 @@ const crew = [
   ["J", "Josh", "Final creative authority"],
   ["A", "Allie", "Creative lead and synthesis"],
   ["A", "Amber", "Intake, routing, and inbox"],
-  ["E", "Artisa", "Editor and final QA"],
-  ["P", "Slick", "Publisher and release gate"],
-  ["S", "Tigra", "Social media manager"],
-  ["R", "The Scout", "Runner and resource finder"],
+  ["A", "Artisa", "Editor and final QA"],
+  ["S", "Slick", "Publisher and release gate"],
+  ["T", "Tigra", "Social media manager"],
+  ["SC", "The Scout", "Runner and resource finder"],
   ["M", "Marketer", "Distribution and outreach"]
 ];
 
