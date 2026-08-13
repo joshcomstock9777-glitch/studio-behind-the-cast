@@ -12,7 +12,7 @@ const crew = [
 const pathConfig = window.__PATH_CONFIG__ ?? {};
 const pathBaseUrl = String(pathConfig.apiBaseUrl ?? "").trim();
 const workflowList = document.querySelector("#workflow-list");
-const feed = document.querySelector("#bridge-feed");
+const feed = document.querySelector("#path-feed");
 const sender = document.querySelector("#message-sender");
 const lastSync = document.querySelector("#last-sync");
 const connectionTitle = document.querySelector("#connection-title");
@@ -24,6 +24,11 @@ let currentUserSessionId = null;
 let currentSession = null;
 let pollTimer = null;
 let polling = false;
+let pollRetryCount = 0;
+
+const BASE_POLL_DELAY = 2000;
+const MAX_POLL_DELAY = 30_000;
+const MAX_POLL_RETRIES = 5;
 
 function setConnection(title, detail, online = false) {
   connectionTitle.textContent = title;
@@ -89,30 +94,59 @@ function render() {
 }
 
 function stopPolling() {
-  if (pollTimer) clearInterval(pollTimer);
+  if (pollTimer) clearTimeout(pollTimer);
   pollTimer = null;
 }
 
 async function readSession(sessionId) {
-  const response = await fetch(pathUrl(`/sessions/${sessionId}`), {
+  const response = await fetch(pathUrl(`/sessions/${encodeURIComponent(sessionId)}`), {
     headers: { accept: "application/json" }
   });
   if (response.status === 404) return null;
+  const bodyText = await response.text();
+  let body = null;
+  try {
+    body = bodyText ? JSON.parse(bodyText) : null;
+  } catch {}
   if (!response.ok) {
-    let detail = "";
-    try {
-      const body = await response.json();
-      detail = body?.error ? `: ${body.error}` : "";
-    } catch {
-      detail = await response.text().catch(() => "");
-    }
+    const detail = body?.error ? `: ${body.error}` : bodyText ? `: ${bodyText.slice(0, 200)}` : "";
     throw new Error(`Path session fetch failed (${response.status})${detail}`);
   }
-  return response.json();
+  if (!body || typeof body !== "object") {
+    throw new Error("Path session response was not valid JSON.");
+  }
+  return body;
+}
+
+function queuePoll(sessionId, delay = BASE_POLL_DELAY) {
+  stopPolling();
+  pollTimer = setTimeout(() => {
+    refreshSession(sessionId)
+      .then(updated => {
+        if (updated === false) {
+          queuePoll(sessionId, BASE_POLL_DELAY);
+          return;
+        }
+        if (currentSession?.status === "final" || currentSession?.status === "error") return;
+        pollRetryCount = 0;
+        queuePoll(sessionId, BASE_POLL_DELAY);
+      })
+      .catch(error => {
+        pollRetryCount += 1;
+        if (pollRetryCount >= MAX_POLL_RETRIES) {
+          setConnection("PATH BACKEND BLOCKED", `Path session fetch failed after ${MAX_POLL_RETRIES} retries.`, false);
+          stopPolling();
+          return;
+        }
+        const retryDelay = Math.min(BASE_POLL_DELAY * (2 ** pollRetryCount), MAX_POLL_DELAY);
+        setConnection("PATH BACKEND BLOCKED", error.message, false);
+        queuePoll(sessionId, retryDelay);
+      });
+  }, delay);
 }
 
 async function refreshSession(sessionId) {
-  if (polling) return;
+  if (polling) return false;
   polling = true;
   try {
     const session = await readSession(sessionId);
@@ -120,9 +154,8 @@ async function refreshSession(sessionId) {
     currentSession = session;
     render();
     lastSync.textContent = `Path sync: ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
-    if (session.status === "final" || session.status === "error") {
-      stopPolling();
-    }
+    setConnection("PATH CONTROL SURFACE", "Current Path contract loaded", true);
+    return true;
   } finally {
     polling = false;
   }
@@ -131,14 +164,15 @@ async function refreshSession(sessionId) {
 async function startSession(sessionId) {
   currentUserSessionId = sessionId;
   stopPolling();
-  await refreshSession(sessionId);
-  if (currentSession?.status === "final" || currentSession?.status === "error") return;
-  pollTimer = setInterval(() => {
-    refreshSession(sessionId).catch(error => {
-      setConnection("PATH BACKEND BLOCKED", error.message, false);
-      stopPolling();
-    });
-  }, 2000);
+  pollRetryCount = 0;
+  try {
+    await refreshSession(sessionId);
+    if (currentSession?.status === "final" || currentSession?.status === "error") return;
+    queuePoll(sessionId);
+  } catch (error) {
+    setConnection("PATH BACKEND BLOCKED", error.message, false);
+    queuePoll(sessionId, Math.min(BASE_POLL_DELAY * 2, MAX_POLL_DELAY));
+  }
 }
 
 async function sendRequest(target, message) {
@@ -224,6 +258,7 @@ document.querySelector("#refresh-feed").addEventListener("click", () => {
 
 async function loadBrain() {
   const state = document.querySelector("#brain-loaded");
+  if (!state) return;
   try {
     const response = await fetch("brain/current.json", { cache: "no-store" });
     if (!response.ok) throw new Error("Brain unavailable");
@@ -247,5 +282,7 @@ loadBrain();
 if (!pathBaseUrl) {
   setConnection("PATH CONFIG MISSING", "Set the Pages Path client config to the current Path endpoint.", false);
 } else {
-  setConnection("PATH CONTROL SURFACE", "Current Path contract loaded", true);
+  setConnection("PATH CONTROL SURFACE", "Current Path contract configured", false);
 }
+
+window.addEventListener("beforeunload", stopPolling);

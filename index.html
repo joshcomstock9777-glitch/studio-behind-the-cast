@@ -83,7 +83,7 @@
             <button class="ghost-button" id="refresh-feed" type="button">Refresh feed</button>
           </div>
 
-          <div id="bridge-feed" class="bridge-feed" aria-live="polite"></div>
+          <div id="path-feed" class="bridge-feed" aria-live="polite"></div>
 
           <form id="message-form" class="message-form">
             <label>
@@ -124,6 +124,7 @@
             <label class="check-row"><input id="cp-brain" type="checkbox" /> Brain updated</label>
             <button class="primary-button" type="submit">Send checkpoint through Path</button>
           </form>
+          <p class="truth-note">Each checkpoint starts a fresh Path session routed to Amber; it does not mutate an existing transcript.</p>
         </aside>
       </section>
 

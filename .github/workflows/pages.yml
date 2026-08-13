@@ -31,8 +31,12 @@ jobs:
           python - <<'PY'
           import json
           import os
+          from urllib.parse import urlparse
 
           base_url = os.environ["PATH_API_BASE_URL"].strip()
+          parsed = urlparse(base_url)
+          if parsed.scheme != "https" or not parsed.netloc.endswith(".workers.dev"):
+              raise SystemExit("PATH_API_BASE_URL must be an https://*.workers.dev URL")
           with open("path-config.js", "w", encoding="utf-8") as handle:
               handle.write("window.__PATH_CONFIG__ = ")
               handle.write(json.dumps({"apiBaseUrl": base_url}))

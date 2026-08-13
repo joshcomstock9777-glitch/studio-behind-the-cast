@@ -26,6 +26,7 @@ Every meaningful state-changing action uses the same envelope:
   requestId: string,
   correlationId: string,
   causationId: string | null,
+  // Only the contract actors below emit Brain events; preserved UI crew stay out of scope.
   actor: "josh" | "path" | "amber" | "allie" | "editor" | "review",
   type: string,
   stateVersion: number,
@@ -33,6 +34,8 @@ Every meaningful state-changing action uses the same envelope:
   payload: object
 }
 ```
+
+The persistent Brain event contract only uses the actors above. Additional crew roles in the Studio UI remain preserved as roster/history context and do not emit Brain events unless the contract is explicitly expanded.
 
 ## Initial event types
 
