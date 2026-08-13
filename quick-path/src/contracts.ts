@@ -65,7 +65,7 @@ export interface SessionRecord {
   calls: number;
   stateVersion: number;
   transcript: Array<PathEnvelope | AgentResult>;
-  events: BrainEvent[];
+  events?: BrainEvent[];
   processed: Record<string, AgentResult>;
 }
 
