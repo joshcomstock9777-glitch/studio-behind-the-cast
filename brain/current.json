@@ -1,22 +1,29 @@
 {
   "version": "Bridge V1 / Creative OS V28",
-  "updatedAt": "2026-08-08T20:38:00-04:00",
+  "updatedAt": "2026-08-13T02:24:03+00:00",
   "updatedBy": "Amber",
   "summary": "Moonshadow Bridge V1 is the first deployed Bridge. Moonshadow Creative OS/editor Version 28 is a separate existing system and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
   "identity": {
     "Josh": "Architect, Creator, and final decision-maker",
-    "Amber": "Studio Manager and Social Media Manager",
-    "Allie": "Separate Studio Architect, Creative Partner, and working partner"
+    "Amber": "Studio Manager, intake router, and handoff custodian",
+    "Allie": "Creative partner, synthesis lead, and working partner",
+    "Artisa": "Editor and final QA gate",
+    "Slick": "Publisher and release gate",
+    "Tigra": "Social media manager",
+    "The Scout": "Runner and resource finder",
+    "Marketer": "Distribution and outreach lead"
   },
   "crew": [
     { "name": "Josh", "role": "Architect & Creator", "verification": "UNVERIFIED" },
-    { "name": "Amber", "role": "Studio & Social Media Manager", "verification": "UNVERIFIED" },
-    { "name": "Allie", "role": "Studio Architect & Working Partner", "verification": "UNVERIFIED" },
+    { "name": "Amber", "role": "Studio Operations / Intake", "verification": "UNVERIFIED" },
+    { "name": "Allie", "role": "Creative lead and synthesis", "verification": "UNVERIFIED" },
     { "name": "Hallie", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
     { "name": "Ro", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
-    { "name": "Ariza / Artisan", "role": "Master Visual & Pacing Editor", "verification": "UNVERIFIED" },
-    { "name": "Slick", "role": "Infrastructure, connectors, account rotation, and Runner duties", "verification": "UNVERIFIED" },
-    { "name": "Tigra", "role": "ESTABLISHED ROLE — RECOVERY REQUIRED", "verification": "UNVERIFIED" }
+    { "name": "Artisa", "role": "Editor and final QA", "verification": "UNVERIFIED" },
+    { "name": "Slick", "role": "Publisher and release gate", "verification": "UNVERIFIED" },
+    { "name": "Tigra", "role": "Social media manager", "verification": "UNVERIFIED" },
+    { "name": "The Scout", "role": "Runner and resource finder", "verification": "UNVERIFIED" },
+    { "name": "Marketer", "role": "Distribution and outreach", "verification": "UNVERIFIED" }
   ],
   "systems": {
     "brain": "PERSISTENT OPERATIONAL MEMORY",
@@ -26,13 +33,13 @@
     "checkpoint": "FORMAT LOCKED"
   },
   "workflow": [
-    "Read the current Brain summary",
-    "Check in",
-    "Find the Task Book assignment",
-    "Leave one Workbench handoff",
-    "Send one Bridge checkpoint",
-    "Update the task state",
-    "Check out"
+    "Josh and Allie define the brief and final creative direction",
+    "Amber receives inbound calls, texts, and emails, then routes work",
+    "Artisa performs final edit, continuity, and quality review",
+    "Slick packages, double-checks, and releases the work",
+    "Tigra drafts and manages outbound social responses",
+    "The Scout gathers free tools, APIs, and resources",
+    "Marketer finds free distribution and outreach opportunities"
   ],
   "checkpointFormat": "NAME | ROLE | TASK | STATUS | LAST ACTION | BLOCKER | NEXT ACTION | BRAIN UPDATED: YES/NO",
   "lockedRules": [
@@ -44,8 +51,13 @@
     "Never expose credentials or secrets"
   ],
   "currentAssignments": {
-    "Amber": ["Restore Studio structure", "Restore and verify the Bridge", "Verify social-media operations"],
-    "Allie": ["Continue Moonshadow Creative OS Version 28", "Diagnose and restore Collaborator AI without rebuilding the site"]
+    "Josh + Allie": ["Define the creative brief", "Keep final creative authority"],
+    "Amber": ["Receive inbound communication", "Route work", "Track handoffs"],
+    "Artisa": ["Perform final edit and QA"],
+    "Slick": ["Package and release approved work"],
+    "Tigra": ["Draft social responses and monitor engagement"],
+    "The Scout": ["Find free tools, APIs, and bootstrap resources"],
+    "Marketer": ["Find free distribution and outreach opportunities"]
   },
   "proofOfConcept": {
     "name": "2–7 Agent Workcell",
@@ -55,15 +67,13 @@
     "firstPair": ["Amber", "Allie"],
     "scaleRule": "Pass the complete protocol with two agents first, then add one verified worker at a time until the seven-agent workcell is proven.",
     "evidenceRequired": [
-      "Both workers pass the seven-step doorway protocol",
-      "A real assignment is divided without duplicated ownership",
-      "At least one handoff is completed through the Workbench",
-      "At least one live coordination exchange is completed through the Bridge",
-      "Both workers update task state and check out",
-      "The final output matches Josh's acceptance criteria",
-      "Failures, corrections, and timing are preserved as test evidence"
+      "Review source and example configuration",
+      "Run npm install and npm run check locally",
+      "Add mock-adapter tests for A -> B -> A, duplicate delivery, invalid target, and loop cap",
+      "Create the new Cloudflare resources and record deployment and rollback notes",
+      "Test each private identity independently, then the automatic path"
     ],
-    "status": "REALTIME TRANSPORT TEST PASSED — AMBER/ALLIE SEVEN-STEP DOORWAY TEST NOT YET STARTED"
+    "status": "ALLIE/AMBER THREE-TURN PATH PROVEN — STUDIO WORKFLOW CHAIN UPDATED"
   },
   "bridgeProof": {
     "testedAt": "2026-08-08T20:37:00-04:00",

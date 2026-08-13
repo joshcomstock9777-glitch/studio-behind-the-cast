@@ -61,6 +61,20 @@ A biography is not proof of access. Verify access with a harmless read-only test
 
 Allowed statuses: **ASSIGNED**, **ACTIVE**, **READY FOR REVIEW**, **APPROVED**, **COMPLETE**, **BLOCKED**, **DEFERRED**.
 
+## Studio Workflow Chain
+
+The proof-of-concept operating chain is:
+
+1. **Josh + Allie** define the brief and final creative direction.
+2. **Amber** receives inbound calls, texts, and emails, then routes work.
+3. **Artisa / editor** performs final edit, continuity, and quality review.
+4. **Slick / publisher** packages, double-checks, and releases the work.
+5. **Social media manager** drafts and manages outbound responses.
+6. **The Scout / runner** gathers free tools, APIs, and resources.
+7. **Marketer** finds free distribution and outreach opportunities.
+
+This chain is the studio-facing proof-of-concept list. It is separate from the quick-path runtime proof, which still uses the three-turn Allie / Amber kernel.
+
 ## GitHub Verification
 
 | Parameter | Verified State |

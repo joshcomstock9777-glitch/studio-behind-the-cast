@@ -14,15 +14,17 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
 const crew = [
-  ["J", "Josh", "Architect & Creator"],
-  ["A", "Amber", "Studio & Social Media Manager"],
-  ["A", "Allie", "Studio Architect & Working Partner"],
-  ["H", "Hallie", "Role recovery pending"],
-  ["R", "Ro", "Role recovery pending"],
-  ["A", "Ariza / Artisan", "Visual & Pacing Editor"],
-  ["S", "Slick", "Infrastructure & Runner"],
-  ["T", "Tigra", "Role recovery pending"]
+  ["J", "Josh", "Final creative authority"],
+  ["A", "Allie", "Creative lead and synthesis"],
+  ["A", "Amber", "Intake, routing, and inbox"],
+  ["E", "Artisa", "Editor and final QA"],
+  ["P", "Slick", "Publisher and release gate"],
+  ["S", "Tigra", "Social media manager"],
+  ["R", "The Scout", "Runner and resource finder"],
+  ["M", "Marketer", "Distribution and outreach"]
 ];
+
+const workflowList = document.querySelector("#workflow-list");
 
 const feed = document.querySelector("#bridge-feed");
 const sender = document.querySelector("#message-sender");
@@ -49,11 +51,13 @@ async function loadBrain() {
     const brain = await response.json();
     document.querySelector("#brain-version").textContent = brain.version;
     document.querySelector("#brain-summary").textContent = brain.summary;
+    workflowList.innerHTML = (brain.workflow ?? []).map(step => `<li>${escapeHtml(step)}</li>`).join("");
     state.textContent = "REPOSITORY SNAPSHOT LOADED";
     state.classList.add("loaded");
   } catch {
     document.querySelector("#brain-version").textContent = "Unavailable";
     document.querySelector("#brain-summary").textContent = "The repository Brain snapshot could not be read.";
+    workflowList.innerHTML = `<li>Workflow unavailable.</li>`;
     state.textContent = "NOT LOADED";
   }
 }
