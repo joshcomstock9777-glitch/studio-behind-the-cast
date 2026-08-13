@@ -12,19 +12,49 @@
       <header class="topbar">
         <div>
           <p class="eyebrow">MOONSHADOW STUDIO</p>
-          <h1>The Bridge <span class="version-mark">V1</span></h1>
-          <p class="subtitle">First deployed Bridge · coordination, checkpoints, and handoffs</p>
+          <h1>Studio Go <span class="version-mark">PREVIEW</span></h1>
+          <p class="subtitle">Phone-ready control shell with one verified editor route and honest status labels</p>
         </div>
         <div class="connection-card" aria-live="polite">
           <span class="status-dot offline"></span>
           <div>
-            <strong id="connection-title">CONNECTING</strong>
-            <span id="connection-detail">Authenticating with the Bridge backend…</span>
+            <strong id="connection-title">STUDIO GO PREVIEW</strong>
+            <span id="connection-detail">Control shell loading for phone and desktop…</span>
           </div>
         </div>
       </header>
 
-      <section class="dashboard-grid">
+      <section class="panel launch-panel">
+        <div class="launch-copy">
+          <p class="eyebrow">STUDIO GO</p>
+          <h2>Control shell</h2>
+          <p>
+            This shell is the launch point. It loads on phone and desktop, keeps Path separate, and provides one verified route into the editor without pretending the editor lives here.
+          </p>
+        </div>
+        <div class="launch-actions">
+          <a class="primary-button" href="https://replit.com/@joshcomstockndj/Video-Editor-Pro" target="_blank" rel="noopener noreferrer">
+            Open editor
+          </a>
+          <a class="ghost-button" href="#dashboard-grid">Open shell view</a>
+        </div>
+        <div class="status-strip" aria-label="Studio Go, Editor, and Path status">
+          <div>
+            <span>Studio Go</span>
+            <strong id="studio-go-status">PREVIEW SHELL</strong>
+          </div>
+          <div>
+            <span>Editor</span>
+            <strong id="editor-status">EXTERNAL ROUTE READY</strong>
+          </div>
+          <div>
+            <span>Path</span>
+            <strong id="path-status">SEPARATE WORKSPACE</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid" id="dashboard-grid">
         <aside class="panel crew-panel">
           <div class="panel-heading">
             <div>
