@@ -12,29 +12,61 @@
       <header class="topbar">
         <div>
           <p class="eyebrow">MOONSHADOW STUDIO</p>
-          <h1>The Bridge <span class="version-mark">V1</span></h1>
-          <p class="subtitle">First deployed Bridge · coordination, checkpoints, and handoffs</p>
+          <h1>Studio Go <span class="version-mark">PREVIEW</span></h1>
+          <p class="subtitle">Phone-ready control shell that calls the current Path contract and keeps legacy routes isolated</p>
         </div>
         <div class="connection-card" aria-live="polite">
           <span class="status-dot offline"></span>
           <div>
-            <strong id="connection-title">CONNECTING</strong>
-            <span id="connection-detail">Authenticating with the Bridge backend…</span>
+            <strong id="connection-title">PATH CONTROL SURFACE</strong>
+            <span id="connection-detail">Control shell loading the current Path route…</span>
           </div>
         </div>
       </header>
 
-      <section class="dashboard-grid">
+      <section class="panel launch-panel">
+        <div class="launch-copy">
+          <p class="eyebrow">STUDIO GO</p>
+          <h2>Control shell</h2>
+          <p>This shell is the launch point. It loads on phone and desktop, calls the current Path entrypoint, and keeps legacy Bridge execution paths isolated.</p>
+        </div>
+        <div class="launch-actions">
+          <a class="primary-button" href="https://replit.com/@joshcomstockndj/Video-Editor-Pro" target="_blank" rel="noopener noreferrer">
+            Open editor
+          </a>
+          <a class="ghost-button" href="#dashboard-grid">Open shell view</a>
+        </div>
+        <div class="status-strip" aria-label="Studio Go, Editor, and Path status">
+          <div>
+            <span>Studio Go</span>
+            <strong id="studio-go-status">PREVIEW SHELL</strong>
+          </div>
+          <div>
+            <span>Editor</span>
+            <strong id="editor-status">EXTERNAL ROUTE READY</strong>
+          </div>
+          <div>
+            <span>Path</span>
+            <strong id="path-status">CURRENT CONTRACT READY</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid" id="dashboard-grid">
         <aside class="panel crew-panel">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">DOORWAY</p>
               <h2>Crew status</h2>
             </div>
-            <span class="count" id="active-count">0 active</span>
+            <span class="count" id="active-count">No session</span>
           </div>
           <div id="crew-list" class="crew-list"></div>
-          <p class="truth-note">No worker is verified until all seven doorway tests pass.</p>
+          <p class="truth-note">No worker is verified until the current Path contract proves the full route.</p>
+          <div class="brain-card workflow-card">
+            <div class="brain-title"><span>Workflow chain</span><strong>Proof of concept</strong></div>
+            <ol id="workflow-list" class="workflow-list"></ol>
+          </div>
           <div class="brain-card">
             <div class="brain-title"><span>Brain snapshot</span><strong id="brain-version">Loading…</strong></div>
             <p id="brain-summary">Reading the repository Brain…</p>
@@ -46,23 +78,23 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">LIVE ROOM</p>
-              <h2>Bridge feed</h2>
+              <h2>Path feed</h2>
             </div>
             <button class="ghost-button" id="refresh-feed" type="button">Refresh feed</button>
           </div>
 
-          <div id="bridge-feed" class="bridge-feed" aria-live="polite"></div>
+          <div id="path-feed" class="bridge-feed" aria-live="polite"></div>
 
           <form id="message-form" class="message-form">
             <label>
-              Sender
+              Route target
               <select id="message-sender" required></select>
             </label>
             <label class="message-field">
-              Message
-              <textarea id="message-text" rows="2" maxlength="700" placeholder="Leave a direct Bridge message…" required></textarea>
+              Request
+              <textarea id="message-text" rows="2" maxlength="700" placeholder="Leave a request for the current Path contract…" required></textarea>
             </label>
-            <button class="primary-button" type="submit">Send to Bridge</button>
+            <button class="primary-button" type="submit">Send to Path</button>
           </form>
         </section>
 
@@ -76,8 +108,8 @@
 
           <form id="checkpoint-form" class="checkpoint-form">
             <label>Name<input id="cp-name" value="AMBER" required /></label>
-            <label>Role<input id="cp-role" value="Studio & Social Media Manager" required /></label>
-            <label>Task<input id="cp-task" value="Restore the Bridge" required /></label>
+            <label>Role<input id="cp-role" value="Studio Operations / Intake" required /></label>
+            <label>Task<input id="cp-task" value="Route incoming calls, texts, and emails" required /></label>
             <label>Status
               <select id="cp-status">
                 <option>ACTIVE</option>
@@ -90,18 +122,19 @@
             <label>Blocker<textarea id="cp-blocker" rows="2" required></textarea></label>
             <label>Next action<textarea id="cp-next" rows="2" required></textarea></label>
             <label class="check-row"><input id="cp-brain" type="checkbox" /> Brain updated</label>
-            <button class="primary-button" type="submit">Post checkpoint</button>
+            <button class="primary-button" type="submit">Send checkpoint through Path</button>
           </form>
+          <p class="truth-note">Each checkpoint starts a fresh Path session routed to Amber; it does not mutate an existing transcript.</p>
         </aside>
       </section>
 
       <footer>
         <span>Brain carries continuity.</span>
-        <span>Bridge carries live communication.</span>
-        <span id="last-sync">Bridge sync: waiting</span>
+        <span>Path carries live routing.</span>
+        <span id="last-sync">Path sync: waiting</span>
       </footer>
     </main>
-    <script src="firebase-config.js"></script>
+    <script src="path-config.js"></script>
     <script type="module" src="app.js"></script>
   </body>
 </html>

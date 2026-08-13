@@ -1,39 +1,34 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {
-  getDatabase,
-  limitToLast,
-  onChildAdded,
-  onDisconnect,
-  onValue,
-  push,
-  query,
-  ref,
-  serverTimestamp,
-  set
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
-
 const crew = [
-  ["J", "Josh", "Architect & Creator"],
-  ["A", "Amber", "Studio & Social Media Manager"],
-  ["A", "Allie", "Studio Architect & Working Partner"],
-  ["H", "Hallie", "Role recovery pending"],
-  ["R", "Ro", "Role recovery pending"],
-  ["A", "Ariza / Artisan", "Visual & Pacing Editor"],
-  ["S", "Slick", "Infrastructure & Runner"],
-  ["T", "Tigra", "Role recovery pending"]
+  ["J", "Josh", "Final creative authority"],
+  ["A", "Allie", "Creative lead and synthesis"],
+  ["A", "Amber", "Intake, routing, and inbox"],
+  ["A", "Artisa", "Editor and final QA"],
+  ["S", "Slick", "Publisher and release gate"],
+  ["T", "Tigra", "Social media manager"],
+  ["SC", "The Scout", "Runner and resource finder"],
+  ["M", "Marketer", "Distribution and outreach"]
 ];
 
-const feed = document.querySelector("#bridge-feed");
+const pathConfig = window.__PATH_CONFIG__ ?? {};
+const pathBaseUrl = String(pathConfig.apiBaseUrl ?? "").trim();
+const workflowList = document.querySelector("#workflow-list");
+const feed = document.querySelector("#path-feed");
 const sender = document.querySelector("#message-sender");
 const lastSync = document.querySelector("#last-sync");
 const connectionTitle = document.querySelector("#connection-title");
 const connectionDetail = document.querySelector("#connection-detail");
 const statusDot = document.querySelector(".status-dot");
 const entries = [];
-let database;
-let currentUser;
-let realtimeStarted = false;
+
+let currentUserSessionId = null;
+let currentSession = null;
+let pollTimer = null;
+let polling = false;
+let pollRetryCount = 0;
+
+const BASE_POLL_DELAY = 2000;
+const MAX_POLL_DELAY = 30_000;
+const MAX_POLL_RETRIES = 5;
 
 function setConnection(title, detail, online = false) {
   connectionTitle.textContent = title;
@@ -41,21 +36,170 @@ function setConnection(title, detail, online = false) {
   statusDot.classList.toggle("offline", !online);
 }
 
-async function loadBrain() {
-  const state = document.querySelector("#brain-loaded");
-  try {
-    const response = await fetch("brain/current.json", { cache: "no-store" });
-    if (!response.ok) throw new Error("Brain unavailable");
-    const brain = await response.json();
-    document.querySelector("#brain-version").textContent = brain.version;
-    document.querySelector("#brain-summary").textContent = brain.summary;
-    state.textContent = "REPOSITORY SNAPSHOT LOADED";
-    state.classList.add("loaded");
-  } catch {
-    document.querySelector("#brain-version").textContent = "Unavailable";
-    document.querySelector("#brain-summary").textContent = "The repository Brain snapshot could not be read.";
-    state.textContent = "NOT LOADED";
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>'"]/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[character]));
+}
+
+function displayTime(entry) {
+  const date = entry.createdAt ? new Date(entry.createdAt) : new Date();
+  return date.toLocaleString([], { dateStyle: "short", timeStyle: "short" });
+}
+
+function pathUrl(pathname) {
+  if (!pathBaseUrl) throw new Error("Path runtime configuration is unavailable.");
+  return new URL(pathname, pathBaseUrl).toString();
+}
+
+function sessionSummary(record) {
+  return `${String(record.status ?? "open").toUpperCase()} · ${record.calls ?? 0} call${record.calls === 1 ? "" : "s"} · v${record.stateVersion ?? 0}`;
+}
+
+function renderEntry(entry) {
+  if (entry?.schema === "moonshadow.path.v1") {
+    const role = entry.from === "josh" ? "Josh" : String(entry.from ?? "path");
+    const title = `${role} → ${String(entry.to ?? "unknown").toUpperCase()}`;
+    const tag = `${String(entry.kind ?? "seed").toUpperCase()} · ${String(entry.correlationId ?? "").slice(0, 8)}`;
+    return `<article class="feed-item request"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(tag)}</span><span class="tag">TURN ${escapeHtml(String(entry.turn ?? 0))}</span></div></article>`;
   }
+
+  if (entry?.identity) {
+    const title = `${String(entry.identity).toUpperCase()} RESPONSE`;
+    const tag = `${String(entry.kind ?? "handoff").toUpperCase()} · ${String(entry.correlationId ?? "").slice(0, 8)}`;
+    return `<article class="feed-item response"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(tag)}</span><span class="tag">MODEL ${escapeHtml(entry.model ?? "unknown")}</span></div></article>`;
+  }
+
+  return "";
+}
+
+function render() {
+  const transcript = currentSession && Array.isArray(currentSession.transcript) ? currentSession.transcript : [];
+  if (!currentSession || !transcript.length) {
+    feed.innerHTML = `<div class="empty-state"><div><strong>The Path is quiet.</strong><br />Waiting for the first request through the current contract.</div></div>`;
+    sender.value = sender.value || "Amber";
+    document.querySelector("#active-count").textContent = "No session";
+    return;
+  }
+
+  entries.length = 0;
+  entries.push(...transcript);
+  feed.innerHTML = entries.map(renderEntry).filter(Boolean).join("");
+  feed.scrollTop = feed.scrollHeight;
+  document.querySelector("#active-count").textContent = sessionSummary(currentSession);
+}
+
+function stopPolling() {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = null;
+}
+
+async function readSession(sessionId) {
+  const response = await fetch(pathUrl(`/sessions/${encodeURIComponent(sessionId)}`), {
+    headers: { accept: "application/json" }
+  });
+  if (response.status === 404) return null;
+  const bodyText = await response.text();
+  let body = null;
+  try {
+    body = bodyText ? JSON.parse(bodyText) : null;
+  } catch {}
+  if (!response.ok) {
+    const detail = body?.error ? `: ${body.error}` : bodyText ? `: ${bodyText.slice(0, 200)}` : "";
+    throw new Error(`Path session fetch failed (${response.status})${detail}`);
+  }
+  if (!body || typeof body !== "object") {
+    throw new Error("Path session response was not valid JSON.");
+  }
+  return body;
+}
+
+function queuePoll(sessionId, delay = BASE_POLL_DELAY) {
+  stopPolling();
+  pollTimer = setTimeout(() => {
+    refreshSession(sessionId)
+      .then(updated => {
+        if (updated === false) {
+          queuePoll(sessionId, BASE_POLL_DELAY);
+          return;
+        }
+        if (currentSession?.status === "final" || currentSession?.status === "error") return;
+        pollRetryCount = 0;
+        queuePoll(sessionId, BASE_POLL_DELAY);
+      })
+      .catch(error => {
+        pollRetryCount += 1;
+        if (pollRetryCount >= MAX_POLL_RETRIES) {
+          setConnection("PATH BACKEND BLOCKED", `Path session fetch failed after ${MAX_POLL_RETRIES} retries.`, false);
+          stopPolling();
+          return;
+        }
+        const retryDelay = Math.min(BASE_POLL_DELAY * (2 ** pollRetryCount), MAX_POLL_DELAY);
+        setConnection("PATH BACKEND BLOCKED", error.message, false);
+        queuePoll(sessionId, retryDelay);
+      });
+  }, delay);
+}
+
+async function refreshSession(sessionId) {
+  if (polling) return false;
+  polling = true;
+  try {
+    const session = await readSession(sessionId);
+    if (!session) return;
+    currentSession = session;
+    render();
+    lastSync.textContent = `Path sync: ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+    setConnection("PATH CONTROL SURFACE", "Current Path contract loaded", true);
+    return true;
+  } finally {
+    polling = false;
+  }
+}
+
+async function startSession(sessionId) {
+  currentUserSessionId = sessionId;
+  stopPolling();
+  pollRetryCount = 0;
+  try {
+    await refreshSession(sessionId);
+    if (currentSession?.status === "final" || currentSession?.status === "error") return;
+    queuePoll(sessionId);
+  } catch (error) {
+    setConnection("PATH BACKEND BLOCKED", error.message, false);
+    queuePoll(sessionId, Math.min(BASE_POLL_DELAY * 2, MAX_POLL_DELAY));
+  }
+}
+
+async function sendRequest(target, message) {
+  if (!pathBaseUrl) throw new Error("Path runtime configuration is unavailable.");
+  const response = await fetch(pathUrl("/sessions"), {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ target, message })
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(payload?.error ? `Path request failed: ${payload.error}` : `Path request failed (${response.status})`);
+  }
+
+  currentSession = {
+    sessionId: payload.sessionId,
+    correlationId: payload.correlationId,
+    status: payload.status ?? "open",
+    calls: 0,
+    stateVersion: 0,
+    transcript: [],
+    processed: {}
+  };
+  render();
+  await startSession(payload.sessionId);
+  return payload;
 }
 
 document.querySelector("#crew-list").innerHTML = crew.map(([initial, name, role]) => `
@@ -66,44 +210,8 @@ document.querySelector("#crew-list").innerHTML = crew.map(([initial, name, role]
   </article>
 `).join("");
 
-sender.innerHTML = crew.map(([, name]) => `<option>${name}</option>`).join("");
+sender.innerHTML = ["Amber", "Allie"].map(name => `<option>${name}</option>`).join("");
 sender.value = "Amber";
-
-function escapeHtml(value = "") {
-  return String(value).replace(/[&<>'"]/g, character => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
-  }[character]));
-}
-
-function displayTime(entry) {
-  const date = entry.createdAt ? new Date(entry.createdAt) : new Date();
-  return date.toLocaleString([], { dateStyle: "short", timeStyle: "short" });
-}
-
-function render() {
-  if (!entries.length) {
-    feed.innerHTML = `<div class="empty-state"><div><strong>The Bridge is quiet.</strong><br />Waiting for the first verified live message.</div></div>`;
-    return;
-  }
-  feed.innerHTML = entries.map(entry => `
-    <article class="feed-item ${entry.type === "checkpoint" ? "checkpoint" : "message"}">
-      <div class="feed-meta"><strong>${escapeHtml(entry.sender)}</strong><span>${escapeHtml(displayTime(entry))}</span></div>
-      <p>${escapeHtml(entry.text)}</p>
-    </article>
-  `).join("");
-  feed.scrollTop = feed.scrollHeight;
-}
-
-async function sendEntry(entry) {
-  if (!database || !currentUser) throw new Error("Bridge is not connected yet.");
-  await push(ref(database, "bridge/v1/entries"), {
-    ...entry,
-    uid: currentUser.uid,
-    createdAt: Date.now(),
-    serverCreatedAt: serverTimestamp()
-  });
-  lastSync.textContent = `Bridge sync: ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
-}
 
 document.querySelector("#message-form").addEventListener("submit", async event => {
   event.preventDefault();
@@ -111,7 +219,7 @@ document.querySelector("#message-form").addEventListener("submit", async event =
   const button = event.submitter;
   button.disabled = true;
   try {
-    await sendEntry({ type: "message", sender: sender.value, text: text.value.trim().slice(0, 700) });
+    await sendRequest(sender.value, text.value.trim().slice(0, 700));
     text.value = "";
     text.focus();
   } catch (error) {
@@ -123,14 +231,14 @@ document.querySelector("#message-form").addEventListener("submit", async event =
 
 document.querySelector("#checkpoint-form").addEventListener("submit", async event => {
   event.preventDefault();
-  const value = id => document.querySelector(id).value.trim();
+  const value = selector => document.querySelector(selector).value.trim();
   const brain = document.querySelector("#cp-brain").checked ? "YES" : "NO";
   const name = value("#cp-name");
   const checkpoint = `${name.toUpperCase()} | ${value("#cp-role")} | ${value("#cp-task")} | ${value("#cp-status")} | ${value("#cp-last")} | ${value("#cp-blocker")} | ${value("#cp-next")} | BRAIN UPDATED: ${brain}`;
   const button = event.submitter;
   button.disabled = true;
   try {
-    await sendEntry({ type: "checkpoint", sender: `${name} — CHECKPOINT`, text: checkpoint.slice(0, 1600) });
+    await sendRequest("Amber", checkpoint.slice(0, 1600));
   } catch (error) {
     alert(`Checkpoint not sent: ${error.message}`);
   } finally {
@@ -138,56 +246,43 @@ document.querySelector("#checkpoint-form").addEventListener("submit", async even
   }
 });
 
-document.querySelector("#refresh-feed").addEventListener("click", () => location.reload());
-
-async function connectBridge() {
-  const config = window.__FIREBASE_CONFIG__;
-  if (!config) throw new Error("Firebase runtime configuration is unavailable.");
-  const app = initializeApp(config);
-  const auth = getAuth(app);
-  database = getDatabase(app);
-
-  onAuthStateChanged(auth, async user => {
-    if (!user) return;
-    currentUser = user;
-    const presenceRef = ref(database, `bridge/v1/presence/${user.uid}`);
-    await onDisconnect(presenceRef).remove();
-    await set(presenceRef, { online: true, connectedAt: serverTimestamp() });
-    setConnection("BRIDGE CONNECTED", "Realtime backend authenticated", true);
-
-    if (realtimeStarted) return;
-    realtimeStarted = true;
-
-    const connectedRef = ref(database, ".info/connected");
-    onValue(connectedRef, snapshot => {
-      if (snapshot.val()) {
-        setConnection("BRIDGE CONNECTED", "Realtime backend authenticated", true);
-      } else {
-        setConnection("RECONNECTING", "Waiting for Firebase…", false);
-      }
-    });
-
-    const presenceQuery = ref(database, "bridge/v1/presence");
-    onValue(presenceQuery, snapshot => {
-      const active = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
-      document.querySelector("#active-count").textContent = `${active} active`;
-    });
-
-    const feedQuery = query(ref(database, "bridge/v1/entries"), limitToLast(100));
-    onChildAdded(feedQuery, snapshot => {
-      entries.push({ id: snapshot.key, ...snapshot.val() });
-      if (entries.length > 100) entries.shift();
-      render();
-      lastSync.textContent = `Bridge sync: ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
-    });
+document.querySelector("#refresh-feed").addEventListener("click", () => {
+  if (!currentUserSessionId) {
+    location.reload();
+    return;
+  }
+  refreshSession(currentUserSessionId).catch(error => {
+    setConnection("PATH BACKEND BLOCKED", error.message, false);
   });
+});
 
-  await signInAnonymously(auth);
+async function loadBrain() {
+  const state = document.querySelector("#brain-loaded");
+  if (!state) return;
+  try {
+    const response = await fetch("brain/current.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("Brain unavailable");
+    const brain = await response.json();
+    document.querySelector("#brain-version").textContent = brain.version;
+    document.querySelector("#brain-summary").textContent = brain.summary;
+    workflowList.innerHTML = (brain.workflow ?? []).map(step => `<li>${escapeHtml(step)}</li>`).join("");
+    state.textContent = "REPOSITORY SNAPSHOT LOADED";
+    state.classList.add("loaded");
+  } catch {
+    document.querySelector("#brain-version").textContent = "Unavailable";
+    document.querySelector("#brain-summary").textContent = "The repository Brain snapshot could not be read.";
+    workflowList.innerHTML = `<li>Workflow unavailable.</li>`;
+    state.textContent = "NOT LOADED";
+  }
 }
 
 render();
 loadBrain();
-connectBridge().catch(error => {
-  console.error(error);
-  setConnection("BACKEND BLOCKED", error.message, false);
-});
+
+if (!pathBaseUrl) {
+  setConnection("PATH CONFIG MISSING", "Set the Pages Path client config to the current Path endpoint.", false);
+} else {
+  setConnection("PATH CONTROL SURFACE", "Current Path contract configured", false);
+}
+
+window.addEventListener("beforeunload", stopPolling);
