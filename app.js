@@ -13,13 +13,13 @@ const pathConfig = window.__PATH_CONFIG__ ?? {};
 const pathBaseUrl = String(pathConfig.apiBaseUrl ?? "").trim();
 const workflowList = document.querySelector("#workflow-list");
 const feed = document.querySelector("#path-feed");
-const sender = document.querySelector("#message-sender");
+const targetSelect = document.querySelector("#message-target");
 const lastSync = document.querySelector("#last-sync");
 const connectionTitle = document.querySelector("#connection-title");
 const connectionDetail = document.querySelector("#connection-detail");
 const statusDot = document.querySelector(".status-dot");
 const entries = [];
-
+let sending = false;
 let currentUserSessionId = null;
 let currentSession = null;
 let pollTimer = null;
@@ -64,14 +64,12 @@ function renderEntry(entry) {
   if (entry?.schema === "moonshadow.path.v1") {
     const role = entry.from === "josh" ? "Josh" : String(entry.from ?? "path");
     const title = `${role} → ${String(entry.to ?? "unknown").toUpperCase()}`;
-    const tag = `${String(entry.kind ?? "seed").toUpperCase()} · ${String(entry.correlationId ?? "").slice(0, 8)}`;
-    return `<article class="feed-item request"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(tag)}</span><span class="tag">TURN ${escapeHtml(String(entry.turn ?? 0))}</span></div></article>`;
+    return `<article class="feed-item request"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(String(entry.kind ?? "seed").toUpperCase())}</span><span class="tag">CORRELATION ${escapeHtml(String(entry.correlationId ?? ""))}</span><span class="tag">TURN ${escapeHtml(String(entry.turn ?? 0))}</span></div></article>`;
   }
 
   if (entry?.identity) {
     const title = `${String(entry.identity).toUpperCase()} RESPONSE`;
-    const tag = `${String(entry.kind ?? "handoff").toUpperCase()} · ${String(entry.correlationId ?? "").slice(0, 8)}`;
-    return `<article class="feed-item response"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(tag)}</span><span class="tag">MODEL ${escapeHtml(entry.model ?? "unknown")}</span></div></article>`;
+    return `<article class="feed-item response"><div class="feed-meta"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(displayTime(entry))}</span></div><p>${escapeHtml(entry.body ?? "")}</p><div class="tags"><span class="tag">${escapeHtml(String(entry.kind ?? "handoff").toUpperCase())}</span><span class="tag">CORRELATION ${escapeHtml(String(entry.correlationId ?? ""))}</span><span class="tag">MODEL ${escapeHtml(entry.model ?? "unknown")}</span></div></article>`;
   }
 
   return "";
@@ -79,10 +77,16 @@ function renderEntry(entry) {
 
 function render() {
   const transcript = currentSession && Array.isArray(currentSession.transcript) ? currentSession.transcript : [];
-  if (!currentSession || !transcript.length) {
+  if (!currentSession) {
     feed.innerHTML = `<div class="empty-state"><div><strong>The Path is quiet.</strong><br />Waiting for the first request through the current contract.</div></div>`;
-    sender.value = sender.value || "Amber";
+    targetSelect.value = targetSelect.value || "Amber";
     document.querySelector("#active-count").textContent = "No session";
+    return;
+  }
+
+  if (!transcript.length) {
+    feed.innerHTML = `<div class="empty-state"><div><strong>Request queued.</strong><br />Correlation ${escapeHtml(currentSession.correlationId)} is waiting on the first live transcript entry.</div></div>`;
+    document.querySelector("#active-count").textContent = sessionSummary(currentSession);
     return;
   }
 
@@ -210,22 +214,31 @@ document.querySelector("#crew-list").innerHTML = crew.map(([initial, name, role]
   </article>
 `).join("");
 
-sender.innerHTML = ["Amber", "Allie"].map(name => `<option>${name}</option>`).join("");
-sender.value = "Amber";
+targetSelect.innerHTML = ["Amber", "Allie"].map(name => `<option>${name}</option>`).join("");
+targetSelect.value = "Amber";
 
 document.querySelector("#message-form").addEventListener("submit", async event => {
   event.preventDefault();
   const text = document.querySelector("#message-text");
-  const button = event.submitter;
-  button.disabled = true;
+  const button = event.submitter ?? document.querySelector("#message-form button[type='submit']");
+  if (sending) return;
+  const message = text.value.trim().slice(0, 700);
+  if (!message) return;
+  const target = targetSelect.value;
+  if (button) button.disabled = true;
+  sending = true;
   try {
-    await sendRequest(sender.value, text.value.trim().slice(0, 700));
+    setConnection("PATH LOADING", "Sending Josh's message through the current Path contract…", false);
+    await sendRequest(target, message);
     text.value = "";
     text.focus();
+    setConnection("PATH CONTROL SURFACE", `Josh → ${target} queued with live correlation tracking`, true);
   } catch (error) {
     alert(`Message not sent: ${error.message}`);
+    setConnection("PATH BACKEND BLOCKED", error.message, false);
   } finally {
-    button.disabled = false;
+    sending = false;
+    if (button) button.disabled = false;
   }
 });
 
@@ -235,14 +248,14 @@ document.querySelector("#checkpoint-form").addEventListener("submit", async even
   const brain = document.querySelector("#cp-brain").checked ? "YES" : "NO";
   const name = value("#cp-name");
   const checkpoint = `${name.toUpperCase()} | ${value("#cp-role")} | ${value("#cp-task")} | ${value("#cp-status")} | ${value("#cp-last")} | ${value("#cp-blocker")} | ${value("#cp-next")} | BRAIN UPDATED: ${brain}`;
-  const button = event.submitter;
-  button.disabled = true;
+  const button = event.submitter ?? document.querySelector("#checkpoint-form button[type='submit']");
+  if (button) button.disabled = true;
   try {
     await sendRequest("Amber", checkpoint.slice(0, 1600));
   } catch (error) {
     alert(`Checkpoint not sent: ${error.message}`);
   } finally {
-    button.disabled = false;
+    if (button) button.disabled = false;
   }
 });
 
@@ -280,9 +293,9 @@ render();
 loadBrain();
 
 if (!pathBaseUrl) {
-  setConnection("PATH CONFIG MISSING", "Set the Pages Path client config to the current Path endpoint.", false);
+  setConnection("PATH NOT CONFIGURED", "Set the Pages Path client config to the current Path endpoint.", false);
 } else {
-  setConnection("PATH CONTROL SURFACE", "Current Path contract configured", false);
+  setConnection("PATH LOADING", "Connecting to the current Path endpoint…", false);
 }
 
 window.addEventListener("beforeunload", stopPolling);
