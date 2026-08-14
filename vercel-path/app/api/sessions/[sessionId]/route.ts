@@ -1,5 +1,5 @@
 import { getRun } from "workflow/api";
-import type { PathRunEvidence } from "../../../../../quick-path/src/portable";
+import type { PathRunEvidence } from "../../../../src/path-core/portable";
 import { json, originAllowed } from "../../../../lib/http";
 
 function externalizeSession(evidence: PathRunEvidence, sessionId: string) {
