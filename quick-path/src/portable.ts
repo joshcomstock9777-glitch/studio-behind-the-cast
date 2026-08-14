@@ -25,6 +25,7 @@ export interface WorkerRuntime {
 export interface PathRunInput {
   target: Identity;
   message: string;
+  correlationId?: string;
 }
 
 export interface PathRunEvidence {
@@ -62,7 +63,7 @@ export class PortablePathEngine {
     }
 
     const sessionId = crypto.randomUUID();
-    const correlationId = crypto.randomUUID();
+    const correlationId = input.correlationId || crypto.randomUUID();
     let envelope: PathEnvelope = {
       schema: SCHEMA,
       sessionId,
