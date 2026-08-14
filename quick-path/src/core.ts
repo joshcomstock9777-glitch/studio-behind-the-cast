@@ -49,8 +49,18 @@ const core: ExportedHandler<CoreEnv, PathEnvelope> = {
 
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname.startsWith("/sessions/")) {
+      if (origin !== env.ALLOWED_ORIGIN) {
+        return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
+      }
       const sessionId = url.pathname.split("/")[2];
-      return stateStub(env, sessionId).fetch("https://state/session");
+      const stateResponse = await stateStub(env, sessionId).fetch("https://state/session");
+      const headers = new Headers(stateResponse.headers);
+      for (const [key, value] of Object.entries(cors(env, origin))) headers.set(key, value);
+      return new Response(stateResponse.body, {
+        status: stateResponse.status,
+        statusText: stateResponse.statusText,
+        headers
+      });
     }
     if (request.method !== "POST" || url.pathname !== "/sessions") {
       return Response.json({ error: "NOT_FOUND" }, { status: 404, headers: cors(env, origin) });
