@@ -17,7 +17,7 @@ export async function GET(
   context: { params: Promise<{ sessionId: string }> }
 ): Promise<Response> {
   const origin = request.headers.get("origin");
-  if (!originAllowed(origin)) return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
+  if (!originAllowed(origin, request.url)) return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
 
   const { sessionId } = await context.params;
   try {

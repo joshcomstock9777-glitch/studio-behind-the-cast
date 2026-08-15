@@ -7,7 +7,7 @@ const MAX_BODY_BYTES = 16_000;
 
 export async function OPTIONS(request: Request): Promise<Response> {
   const origin = request.headers.get("origin");
-  if (!originAllowed(origin)) return new Response(null, { status: 403 });
+  if (!originAllowed(origin, request.url)) return new Response(null, { status: 403 });
   return new Response(null, {
     status: 204,
     headers: {
@@ -21,7 +21,7 @@ export async function OPTIONS(request: Request): Promise<Response> {
 
 export async function POST(request: Request): Promise<Response> {
   const origin = request.headers.get("origin");
-  if (!originAllowed(origin)) return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
+  if (!originAllowed(origin, request.url)) return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
 
   const raw = await request.text();
   if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) {
