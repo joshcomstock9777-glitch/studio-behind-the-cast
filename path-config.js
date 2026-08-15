@@ -1,0 +1,149 @@
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInAnonymously}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import{getDatabase,limitToLast,onChildAdded,onDisconnect,onValue,push,query,ref,serverTimestamp,set}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+import{getDatabase,limitToLast,onChildAdded,onChildChanged,onDisconnect,onValue,push,query,ref,serverTimestamp,set,update}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+const ROOT="bridge/wake-poc/v1";
+const WORKER_URL="https://moonshadow-wake-relay-poc.joshcomstock9777.workers.dev";
+const requests=new Map(),responses=new Map();
+const sessionId=crypto.randomUUID();
+let db,user,listenersStarted=false;
+@@ -29,36 +30,124 @@ function render(){
+
+async function sendRequest(message,sender,target){
+if(!db||!user)throw new Error("V2 is not connected yet.");
+
+const correlationId=crypto.randomUUID();
+  await push(ref(db,`${ROOT}/requests`),{correlationId,sender,target,message,status:"queued",sessionId,uid:user.uid,createdAt:Date.now(),serverCreatedAt:serverTimestamp(),schemaVersion:1});
+  return correlationId;
+  const requestRef=push(ref(db,`${ROOT}/requests`));
+
+  await set(requestRef,{
+    correlationId,sender,target,message,status:"queued",sessionId,
+    uid:user.uid,createdAt:Date.now(),serverCreatedAt:serverTimestamp(),schemaVersion:1
+  });
+
+  try{
+    await update(requestRef,{status:"processing",processingAt:Date.now()});
+
+    const workerResponse=await fetch(WORKER_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({correlationId,sender,target,message,schemaVersion:1})
+    });
+
+    const result=await workerResponse.json().catch(()=>({}));
+    if(!workerResponse.ok||!result.ok){
+      throw new Error(result.error||`Worker failed with status ${workerResponse.status}`);
+    }
+    if(result.correlationId!==correlationId){
+      throw new Error("Worker returned a mismatched correlation ID.");
+    }
+
+    await push(ref(db,`${ROOT}/responses`),{
+      correlationId,
+      requestKey:requestRef.key,
+      worker:result.worker||target,
+      message:result.message,
+      model:result.model||"unknown",
+      status:"completed",
+      createdAt:result.createdAt||Date.now(),
+      serverCreatedAt:serverTimestamp(),
+      schemaVersion:1
+    });
+
+    await update(requestRef,{
+      status:"completed",
+      completedAt:Date.now(),
+      serverCompletedAt:serverTimestamp()
+    });
+
+    return correlationId;
+  }catch(error){
+    await update(requestRef,{
+      status:"failed",
+      failedAt:Date.now(),
+      error:String(error?.message||error).slice(0,240)
+    }).catch(()=>{});
+    throw error;
+  }
+}
+
+el("wake-form").addEventListener("submit",async event=>{
+  event.preventDefault();const button=el("send"),message=el("message").value.trim();if(!message)return;
+  event.preventDefault();
+  const button=el("send"),message=el("message").value.trim();
+  if(!message)return;
+button.disabled=true;
+  try{const id=await sendRequest(message,el("sender").value,el("target").value);el("message").value="";setStatus("REQUEST QUEUED",`Correlation ${id.slice(0,8)} · awaiting worker`,true);}
+  catch(error){setStatus("V2 BACKEND BLOCKED",error.message,false);alert(`Wake request not sent: ${error.message}`);}
+  finally{button.disabled=false;}
+  setStatus("WORKER PROCESSING","Request queued · calling API worker",true);
+  try{
+    const id=await sendRequest(message,el("sender").value,el("target").value);
+    el("message").value="";
+    setStatus("RESPONSE RETURNED",`Correlation ${id.slice(0,8)} · completed`,true);
+  }catch(error){
+    setStatus("WAKE RELAY FAILED",error.message,false);
+    alert(`Wake request failed: ${error.message}`);
+  }finally{
+    button.disabled=false;
+  }
+});
+
+async function connect(){
+if(!window.__FIREBASE_CONFIG__)throw new Error("Firebase runtime configuration is unavailable.");
+  const app=initializeApp(window.__FIREBASE_CONFIG__);const auth=getAuth(app);db=getDatabase(app);
+  const app=initializeApp(window.__FIREBASE_CONFIG__);
+  const auth=getAuth(app);
+  db=getDatabase(app);
+
+onAuthStateChanged(auth,async current=>{
+    if(!current)return;user=current;
+    if(!current)return;
+    user=current;
+try{
+const presence=ref(db,`${ROOT}/presence/${sessionId}`);
+await onDisconnect(presence).remove();
+await set(presence,{uid:user.uid,online:true,connectedAt:serverTimestamp()});
+setStatus("V2 QUEUE CONNECTED","Isolated Firebase namespace authenticated",true);
+      if(listenersStarted)return;listenersStarted=true;
+      onValue(ref(db,".info/connected"),snapshot=>setStatus(snapshot.val()?"V2 QUEUE CONNECTED":"RECONNECTING",snapshot.val()?"Isolated Firebase namespace authenticated":"Waiting for Firebase…",Boolean(snapshot.val())));
+      onChildAdded(query(ref(db,`${ROOT}/requests`),limitToLast(100)),snapshot=>{requests.set(snapshot.key,{key:snapshot.key,...snapshot.val()});render();stamp();},error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+      onChildAdded(query(ref(db,`${ROOT}/responses`),limitToLast(100)),snapshot=>{const value=snapshot.val();if(value?.correlationId)responses.set(value.correlationId,{key:snapshot.key,...value});render();stamp();},error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+    }catch(error){setStatus("V2 BACKEND BLOCKED",error.message,false);}
+      if(listenersStarted)return;
+      listenersStarted=true;
+
+      onValue(ref(db,".info/connected"),snapshot=>{
+        setStatus(
+          snapshot.val()?"V2 QUEUE CONNECTED":"RECONNECTING",
+          snapshot.val()?"Isolated Firebase namespace authenticated":"Waiting for Firebase…",
+          Boolean(snapshot.val())
+        );
+      });
+
+      const requestQuery=query(ref(db,`${ROOT}/requests`),limitToLast(100));
+      const storeRequest=snapshot=>{
+        requests.set(snapshot.key,{key:snapshot.key,...snapshot.val()});
+        render();stamp();
+      };
+      onChildAdded(requestQuery,storeRequest,error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+      onChildChanged(requestQuery,storeRequest,error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+
+      onChildAdded(query(ref(db,`${ROOT}/responses`),limitToLast(100)),snapshot=>{
+        const value=snapshot.val();
+        if(value?.correlationId)responses.set(value.correlationId,{key:snapshot.key,...value});
+        render();stamp();
+      },error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+    }catch(error){
+      setStatus("V2 BACKEND BLOCKED",error.message,false);
+    }
+});
+
+await signInAnonymously(auth);
+}
+
+render();connect().catch(error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
+render();
+connect().catch(error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
