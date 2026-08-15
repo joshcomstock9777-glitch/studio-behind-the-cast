@@ -17,7 +17,12 @@ export async function GET(
   context: { params: Promise<{ sessionId: string }> }
 ): Promise<Response> {
   const origin = request.headers.get("origin");
-  if (!originAllowed(origin, request.url)) return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
+  // Same-origin browser GET requests commonly omit Origin. Cross-origin fetches
+  // include it, so validate every supplied origin while allowing an absent one
+  // for this read-only polling route. POST and preflight checks remain strict.
+  if (origin !== null && !originAllowed(origin, request.url)) {
+    return Response.json({ error: "ORIGIN_DENIED" }, { status: 403 });
+  }
 
   const { sessionId } = await context.params;
   try {
