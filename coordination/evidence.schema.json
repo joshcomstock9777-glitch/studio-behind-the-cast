@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonshadow.local/coordination/evidence.schema.json",
+  "title": "Moonshadow Evidence Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "evidence_id", "task_id", "correlation_id", "gate", "result", "source", "details", "recorded_by", "recorded_at"],
+  "properties": {
+    "schema": { "const": "moonshadow.coordination.evidence.v1" },
+    "evidence_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "correlation_id": { "type": "string", "minLength": 1 },
+    "gate": { "enum": ["source", "build", "preview", "round_trip", "recovery", "release"] },
+    "result": { "enum": ["pass", "fail", "blocked"] },
+    "source": { "type": "string", "minLength": 1 },
+    "details": { "type": "string", "minLength": 1 },
+    "recorded_by": { "enum": ["allie", "amber", "cassandra", "josh"] },
+    "recorded_at": { "type": "string", "format": "date-time" }
+  }
+}
+
