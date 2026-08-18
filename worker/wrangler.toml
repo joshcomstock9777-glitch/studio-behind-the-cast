@@ -1,0 +1,12 @@
+name = "moonshadow-wake-relay-poc"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+FIREBASE_DB_URL = "https://moonshadow-wake-relay-poc-default-rtdb.firebaseio.com"
+
+# Secret bindings – set via `wrangler secret put GITHUB_MODELS_TOKEN`
+# Never commit token values.
