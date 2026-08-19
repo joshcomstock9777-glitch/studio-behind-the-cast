@@ -10,7 +10,7 @@ const crew = [
 ];
 
 const pathConfig = window.__PATH_CONFIG__ ?? {};
-const pathBaseUrl = String(pathConfig.apiBaseUrl ?? "").trim();
+const pathBaseUrl = String(pathConfig.apiBaseUrl ?? pathConfig.pathApiBaseUrl ?? pathConfig.workerUrl ?? "").trim();
 const workflowList = document.querySelector("#workflow-list");
 const feed = document.querySelector("#path-feed");
 const sender = document.querySelector("#message-sender");
