@@ -10,6 +10,7 @@ const crew = [
 ];
 
 const pathConfig = window.__PATH_CONFIG__ ?? {};
+// Pages injects apiBaseUrl; the checked-in config can still expose legacy pathApiBaseUrl or workerUrl values.
 const pathBaseUrl = String(pathConfig.apiBaseUrl ?? pathConfig.pathApiBaseUrl ?? pathConfig.workerUrl ?? "").trim();
 const workflowList = document.querySelector("#workflow-list");
 const feed = document.querySelector("#path-feed");
