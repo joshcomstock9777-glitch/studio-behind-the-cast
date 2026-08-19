@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080a0f" />
+    <title>Moonshadow Content Factory</title>
+    <link rel="stylesheet" href="factory.css" />
+  </head>
+  <body>
+    <main class="factory-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MOONSHADOW PRODUCER</p>
+          <h1>Content Factory</h1>
+          <p class="subtitle">Producer in front, deterministic editor adapter in the middle, approval gates before anything irreversible.</p>
+        </div>
+        <div class="status-card" aria-live="polite">
+          <div>
+            <strong id="factory-stage">INBOX</strong>
+            <span id="factory-stage-detail">Waiting for a project import.</span>
+          </div>
+          <span class="status-dot offline" id="factory-dot"></span>
+        </div>
+      </header>
+
+      <section class="hero panel">
+        <div>
+          <p class="eyebrow">PROOF LOOP</p>
+          <h2>Import a source, preserve it untouched, generate one Short, and keep the master linked to every derivative.</h2>
+          <p class="copy">
+            This package keeps the original media immutable, runs a deterministic editor adapter, and treats AI output as a proposed plan until a human approves it.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="ghost-button" href="index.html">Back to Studio Go</a>
+          <button class="primary-button" id="reset-factory" type="button">Reset local proof</button>
+        </div>
+      </section>
+
+      <section class="grid">
+        <aside class="panel intake-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">MEDIA INTAKE</p>
+              <h2>Import</h2>
+            </div>
+            <span id="source-preserved">No source yet</span>
+          </div>
+          <form id="intake-form" class="stack">
+            <label>Project name<input id="project-name" value="Test Short" required /></label>
+            <fieldset class="channels">
+              <legend>Target channels</legend>
+              <label><input type="checkbox" value="youtube-long" checked /> YouTube long-form</label>
+              <label><input type="checkbox" value="youtube-short" checked /> YouTube Short</label>
+              <label><input type="checkbox" value="tiktok" checked /> TikTok vertical</label>
+              <label><input type="checkbox" value="vertical-social" checked /> Reusable vertical social</label>
+            </fieldset>
+            <label>Phone video / photo / audio<input id="source-files" type="file" accept="video/*,image/*,audio/*" multiple /></label>
+            <label>Scripts / notes<textarea id="source-notes" rows="4" placeholder="Paste scripts, shot notes, or production notes here."></textarea></label>
+            <label>Approved cloud files<textarea id="source-cloud" rows="3" placeholder="One approved cloud file URL per line."></textarea></label>
+            <button class="primary-button" type="submit">Create project record</button>
+          </form>
+          <div class="status-list">
+            <div><span>Preservation</span><strong id="preservation-status">Waiting</strong></div>
+            <div><span>Master</span><strong id="master-status">None</strong></div>
+            <div><span>Derivative count</span><strong id="derivative-status">0</strong></div>
+          </div>
+        </aside>
+
+        <section class="panel queue-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">QUEUE</p>
+              <h2>Production line</h2>
+            </div>
+            <span id="queue-count">0 projects</span>
+          </div>
+          <div id="queue-list" class="queue-list"></div>
+        </section>
+
+        <section class="panel producer-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">PRODUCER</p>
+              <h2>Analysis and approvals</h2>
+            </div>
+            <span id="provider-status">Provider not configured</span>
+          </div>
+          <div class="stack">
+            <div class="status-grid">
+              <div><span>Current stage</span><strong id="current-stage">INBOX</strong></div>
+              <div><span>Approval</span><strong id="approval-status">Pending</strong></div>
+              <div><span>Publish</span><strong id="publish-status">Blocked</strong></div>
+            </div>
+            <div class="action-row">
+              <button class="ghost-button" id="analyze-project" type="button">Analyze source</button>
+              <button class="ghost-button" id="generate-derivatives" type="button">Create versions</button>
+              <button class="ghost-button" id="apply-plan" type="button">Apply AI plan</button>
+            </div>
+            <label class="approval-line"><input id="approve-paid" type="checkbox" /> Approve paid generation or external model calls</label>
+            <label class="approval-line"><input id="approve-edit" type="checkbox" /> Approve accepting this edit version</label>
+            <label class="approval-line"><input id="approve-export" type="checkbox" /> Approve final export</label>
+            <label class="approval-line"><input id="approve-publish" type="checkbox" /> Approve publishing/posting</label>
+            <div id="analysis-card" class="analysis-card empty">
+              <strong>Waiting for analysis.</strong>
+              <p>Import a source and ask Producer to analyze it.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel editor-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">EDITOR ADAPTER</p>
+              <h2>Deterministic versioning</h2>
+            </div>
+            <span id="version-count">0 versions</span>
+          </div>
+          <div class="editor-layout">
+            <div class="stack">
+              <label>Selected version<select id="version-select"></select></label>
+              <div class="action-row wrap">
+                <button class="ghost-button" id="split-clip" type="button">Split clip</button>
+                <button class="ghost-button" id="trim-clip" type="button">Trim clip</button>
+                <button class="ghost-button" id="move-clip" type="button">Move/reorder</button>
+                <button class="ghost-button" id="reframe-clip" type="button">Resize/crop/reframe</button>
+                <button class="ghost-button" id="add-caption" type="button">Add caption/text</button>
+                <button class="ghost-button" id="add-audio" type="button">Add audio</button>
+                <button class="ghost-button" id="duck-audio" type="button">Duck/balance audio</button>
+                <button class="ghost-button" id="add-overlay" type="button">Insert overlay</button>
+                <button class="ghost-button" id="preview-range" type="button">Preview range</button>
+                <button class="ghost-button" id="undo-edit" type="button">Undo</button>
+              </div>
+              <div class="inline-fields">
+                <label>Clip id<input id="clip-id" placeholder="clip-1" /></label>
+                <label>Start<input id="clip-start" type="number" step="0.1" value="0" /></label>
+                <label>End<input id="clip-end" type="number" step="0.1" value="10" /></label>
+              </div>
+              <div class="inline-fields">
+                <label>Move from<input id="move-from" type="number" step="1" value="0" /></label>
+                <label>Move to<input id="move-to" type="number" step="1" value="1" /></label>
+                <label>Crop / frame<input id="crop-values" placeholder="center, 9:16" /></label>
+              </div>
+              <div class="inline-fields">
+                <label>Caption text<input id="caption-text" placeholder="Hook line for the Short" /></label>
+                <label>Audio asset<input id="audio-asset" placeholder="audio-1 or source asset id" /></label>
+              </div>
+              <div class="inline-fields">
+                <label>Overlay asset<input id="overlay-asset" placeholder="overlay asset id" /></label>
+                <label>Preview from<input id="preview-start" type="number" step="0.1" value="0" /></label>
+                <label>Preview to<input id="preview-end" type="number" step="0.1" value="15" /></label>
+              </div>
+            </div>
+            <div class="preview-wrap">
+              <div class="preview-frame">
+                <video id="preview-video" playsinline controls muted></video>
+                <div id="preview-overlay" class="preview-overlay"></div>
+              </div>
+              <div class="compare-box">
+                <label>Compare against<select id="compare-select"></select></label>
+                <div id="compare-result" class="compare-result empty">No comparison loaded.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel publish-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">EXPORT / PUBLISH</p>
+              <h2>Connector hub</h2>
+            </div>
+            <span id="export-status">Waiting</span>
+          </div>
+          <div class="stack">
+            <div class="action-row wrap">
+              <button class="ghost-button" id="export-package" type="button">Export approved package</button>
+              <button class="ghost-button" id="render-webm" type="button">Render WebM short</button>
+              <button class="ghost-button" id="publish-youtube" type="button">Publish to YouTube</button>
+              <button class="ghost-button" id="publish-tiktok" type="button">Queue TikTok</button>
+            </div>
+            <div class="status-grid">
+              <div><span>YouTube</span><strong id="youtube-status">Disconnected</strong></div>
+              <div><span>TikTok</span><strong id="tiktok-status">Disconnected</strong></div>
+              <div><span>Analytics</span><strong id="analytics-status">Empty</strong></div>
+            </div>
+            <div id="blocked-list" class="analysis-card empty">
+              <strong>Known blockers</strong>
+              <p>Missing publish endpoint or approval gate.</p>
+            </div>
+            <div id="proof-card" class="analysis-card empty">
+              <strong>Proof record</strong>
+              <p>No project imported yet.</p>
+            </div>
+            <div id="analytics-list" class="analytics-list"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="factory-config.js"></script>
+    <script type="module" src="factory.js"></script>
+  </body>
+</html>
+
