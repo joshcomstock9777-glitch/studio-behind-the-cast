@@ -1,0 +1,23 @@
+{
+  "name": "moonshadow-path-vercel-test",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "check": "tsc --noEmit",
+    "test:native": "node --test --experimental-strip-types test/native-auth.test.ts"
+  },
+  "dependencies": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "workflow": "4.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "6.0.3"
+  }
+}
