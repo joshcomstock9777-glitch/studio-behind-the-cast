@@ -3,8 +3,11 @@ import { clientSecretAccepted, issueNativeToken } from "../../../../lib/native-a
 export async function POST(request: Request): Promise<Response> {
   const expectedHash = process.env.NATIVE_CLIENT_SECRET_HASH ?? "";
   const signingSecret = process.env.TOKEN_SIGNING_SECRET ?? "";
-  if (!expectedHash || !signingSecret) {
-    return Response.json({ error: "NATIVE_AUTH_NOT_CONFIGURED" }, { status: 503 });
+  if (!expectedHash) {
+    return Response.json({ error: "NATIVE_CLIENT_SECRET_HASH_NOT_CONFIGURED" }, { status: 503 });
+  }
+  if (!signingSecret) {
+    return Response.json({ error: "TOKEN_SIGNING_SECRET_NOT_CONFIGURED" }, { status: 503 });
   }
 
   const candidate = request.headers.get("x-native-client-secret") ?? "";
