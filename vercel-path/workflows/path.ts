@@ -6,24 +6,14 @@ import {
   type PathRunInput,
   type WorkerRuntime
 } from "../src/path-core/portable";
+import { runModelWorker } from "../lib/agent-runtime";
 
 async function runPortablePath(input: PathRunInput): Promise<PathRunEvidence> {
   "use step";
 
   const workers: WorkerRuntime = {
-    async run(identity: Identity, envelope: PathEnvelope): Promise<AgentResult> {
-      const isFinal = envelope.turn === envelope.maxTurns - 1;
-      return {
-        messageId: crypto.randomUUID(),
-        correlationId: envelope.correlationId,
-        identity,
-        kind: isFinal ? "final" : "handoff",
-        nextTarget: isFinal ? null : identity === "allie" ? "amber" : "allie",
-        body: `${identity} portable test response for turn ${envelope.turn + 1}`,
-        statePatch: {},
-        model: "deterministic-zero-cost-test-worker",
-        sourceVersion: "vercel-portable-test-v1"
-      };
+    async run(identity: Identity, envelope: PathEnvelope, transcript): Promise<AgentResult> {
+      return runModelWorker(identity, envelope, transcript);
     }
   };
 
