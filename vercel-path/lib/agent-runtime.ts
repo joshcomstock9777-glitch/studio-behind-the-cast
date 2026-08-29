@@ -1,7 +1,8 @@
 import type { AgentResult, Identity, PathEnvelope } from "../src/path-core/contracts";
 
-const DEFAULT_MODEL = "google/gemini-2.5-flash-lite";
-const SOURCE_VERSION = "vercel-ai-gateway-v1";
+const DEFAULT_MODEL = "openai/gpt-5.6-sol";
+const FALLBACK_MODELS = ["anthropic/claude-opus-5", "google/gemini-3.6-flash"];
+const SOURCE_VERSION = "vercel-ai-gateway-v2-fallbacks";
 
 const SYSTEM: Record<Identity, string> = {
   allie: [
@@ -20,6 +21,7 @@ const SYSTEM: Record<Identity, string> = {
 };
 
 type GatewayResponse = {
+  model?: string;
   choices?: Array<{ message?: { content?: string } }>;
   error?: { message?: string };
 };
@@ -37,6 +39,7 @@ async function generate(identity: Identity, envelope: PathEnvelope, transcript: 
     },
     body: JSON.stringify({
       model,
+      models: FALLBACK_MODELS,
       messages: [
         { role: "system", content: SYSTEM[identity] },
         {
@@ -58,7 +61,7 @@ async function generate(identity: Identity, envelope: PathEnvelope, transcript: 
   if (!response.ok) throw new Error(`AI_GATEWAY_${response.status}:${data.error?.message || "REQUEST_FAILED"}`);
   const text = data.choices?.[0]?.message?.content?.trim();
   if (!text) throw new Error("AI_GATEWAY_EMPTY_RESPONSE");
-  return { text, model };
+  return { text, model: data.model || model };
 }
 
 export async function runModelWorker(identity: Identity, envelope: PathEnvelope, transcript: unknown[]): Promise<AgentResult> {
