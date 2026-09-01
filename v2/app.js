@@ -10,10 +10,41 @@ let db,user,listenersStarted=false;
 const el=id=>document.getElementById(id);
 el("session-id").textContent=sessionId.slice(0,8);
 
-function escapeHtml(value=""){return String(value).replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));}
+function escapeHtml(value=""){return String(value).replace(/[&<>'\"]/g,c=>({"&":"&","<":"<",">":">","'":"&#39;",'"':'"'}[c]));}
 function setStatus(title,detail,online=false){el("status-title").textContent=title;el("status-detail").textContent=detail;el("status-dot").classList.toggle("online",online);}
 function stamp(){el("last-sync").textContent=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});}
 function when(value){return new Date(value||Date.now()).toLocaleString([],{dateStyle:"short",timeStyle:"medium"});}
+
+function setBanner(title,detail){
+  const banner=el("truth-banner");
+  if(!banner)return;
+  const strong=banner.querySelector("strong");
+  const span=banner.querySelector("span");
+  if(strong)strong.textContent=title;
+  if(span)span.textContent=detail;
+}
+
+async function pingWorker(){
+  try{
+    const health=await fetch(WORKER_URL,{headers:{accept:"application/json"}}).then(r=>r.json());
+    if(!health?.ok){
+      setBanner("WORKER UNREACHABLE","Health check did not return ok.");
+      return;
+    }
+    const probe=await fetch(WORKER_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({correlationId:crypto.randomUUID(),sender:"Josh",target:"Amber",message:"health probe",schemaVersion:1})
+    }).then(r=>r.json()).catch(()=>({ok:false,error:"probe failed"}));
+    if(probe.ok){
+      setBanner("WAKE RELAY LIVE",`${health.service} · agents ${ (health.agents||[]).length } · LLM responding`);
+    }else{
+      setBanner("WORKER UP · LLM DEAD",`${health.service} is running. Model providers failed. Queue will mark wakes failed until a real key is set on the worker.`);
+    }
+  }catch(error){
+    setBanner("WORKER UNREACHABLE",String(error?.message||error));
+  }
+}
 
 function render(){
   const items=[...requests.values()].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
@@ -150,4 +181,5 @@ async function connect(){
 }
 
 render();
+pingWorker();
 connect().catch(error=>setStatus("V2 BACKEND BLOCKED",error.message,false));
