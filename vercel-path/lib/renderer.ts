@@ -107,8 +107,10 @@ export async function renderAndPersist(config: RendererConfig, input: RenderRequ
   };
 }
 
-function rendererHeaders(config: RendererConfig) {
-  return config.workerToken ? { Authorization: `Bearer ${config.workerToken}` } : {};
+function rendererHeaders(config: RendererConfig): Record<string, string> {
+  const headers: Record<string, string> = {};
+  if (config.workerToken) headers.Authorization = `Bearer ${config.workerToken}`;
+  return headers;
 }
 
 function validateRenderInput(input: RenderRequestInput) {
