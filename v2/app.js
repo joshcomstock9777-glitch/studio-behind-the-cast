@@ -3,14 +3,14 @@ import{getAuth,onAuthStateChanged,signInAnonymously}from"https://www.gstatic.com
 import{getDatabase,limitToLast,onChildAdded,onChildChanged,onDisconnect,onValue,push,query,ref,serverTimestamp,set,update}from"https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
 const ROOT="bridge/wake-poc/v1";
-const WORKER_URL="https://moonshadow-wake-relay-poc.joshcomstock9777.workers.dev";
+const WORKER_URL="https://moonshadow-path-proof.vercel.app/api/wake";
 const requests=new Map(),responses=new Map();
 const sessionId=crypto.randomUUID();
 let db,user,listenersStarted=false;
 const el=id=>document.getElementById(id);
 el("session-id").textContent=sessionId.slice(0,8);
 
-function escapeHtml(value=""){return String(value).replace(/[&<>'\"]/g,c=>({"&":"&","<":"<",">":">","'":"&#39;",'"':'"'}[c]));}
+function escapeHtml(value=""){return String(value).replace(/[&<>\"']/g,c=>({"&":"&","<":"<",">":">","\"":""","'":"&#39;"}[c]));}
 function setStatus(title,detail,online=false){el("status-title").textContent=title;el("status-detail").textContent=detail;el("status-dot").classList.toggle("online",online);}
 function stamp(){el("last-sync").textContent=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});}
 function when(value){return new Date(value||Date.now()).toLocaleString([],{dateStyle:"short",timeStyle:"medium"});}
@@ -27,22 +27,13 @@ function setBanner(title,detail){
 async function pingWorker(){
   try{
     const health=await fetch(WORKER_URL,{headers:{accept:"application/json"}}).then(r=>r.json());
-    if(!health?.ok){
-      setBanner("WORKER UNREACHABLE","Health check did not return ok.");
+    if(health?.ok){
+      setBanner("PATH WAKE LIVE",`${health.service} · ${health.provider || "gateway"} · seats ${(health.agents||[]).join(", ")}`);
       return;
     }
-    const probe=await fetch(WORKER_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({correlationId:crypto.randomUUID(),sender:"Josh",target:"Amber",message:"health probe",schemaVersion:1})
-    }).then(r=>r.json()).catch(()=>({ok:false,error:"probe failed"}));
-    if(probe.ok){
-      setBanner("WAKE RELAY LIVE",`${health.service} · agents ${ (health.agents||[]).length } · LLM responding`);
-    }else{
-      setBanner("WORKER UP · LLM DEAD",`${health.service} is running. Model providers failed. Queue will mark wakes failed until a real key is set on the worker.`);
-    }
+    setBanner("WAKE BRIDGE DOWN",health?.error || "Health check failed.");
   }catch(error){
-    setBanner("WORKER UNREACHABLE",String(error?.message||error));
+    setBanner("WAKE BRIDGE DOWN",String(error?.message||error));
   }
 }
 
@@ -121,7 +112,7 @@ el("wake-form").addEventListener("submit",async event=>{
   const button=el("send"),message=el("message").value.trim();
   if(!message)return;
   button.disabled=true;
-  setStatus("WORKER PROCESSING","Request queued · calling API worker",true);
+  setStatus("WORKER PROCESSING","Request queued · calling PATH wake",true);
   try{
     const id=await sendRequest(message,el("sender").value,el("target").value);
     el("message").value="";
