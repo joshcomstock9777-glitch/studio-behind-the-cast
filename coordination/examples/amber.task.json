@@ -1,0 +1,22 @@
+{
+  "schema": "moonshadow.coordination.task.v1",
+  "task_id": "SOURCE-PRESERVE-001",
+  "correlation_id": "source-preserve-replit-001",
+  "title": "Preserve Replit editor source",
+  "owner": "amber",
+  "state": "blocked",
+  "scope": "Inventory and preserve original source without paying, publishing, or modifying it.",
+  "inputs": ["Replit:Video Editor Pro", "Replit:File Organizer"],
+  "expected_output": "Verified inventory plus untouched source ZIP when browser export is available.",
+  "acceptance_tests": ["Editable apps listed", "Source contents inspected read-only", "Original ZIP retained", "No billing action"],
+  "evidence": ["Replit connector listed two editable apps", "Video Editor Pro TypeScript no-emit check passed"],
+  "cost": { "maximum_usd": 0, "actual_usd": 0 },
+  "permission_level": "read_only",
+  "rollback": "No mutations; preserve the original Replit workspaces.",
+  "blocker": "Dashboard temporarily suspended for failed payment.",
+  "next_action": "Attempt Download as ZIP only if the direct project page permits it.",
+  "retry_count": 0,
+  "manual_step": { "objective": "Open the direct project page without touching billing.", "success_signal": "The Files panel and Download as ZIP option are visible.", "screenshot_clue": "Any suspension message or the Files three-dot menu." },
+  "updated_at": "2026-08-15T08:30:00Z"
+}
+

@@ -1,0 +1,22 @@
+{
+  "schema": "moonshadow.coordination.task.v1",
+  "task_id": "COORDINATION-CONTRACT-001",
+  "correlation_id": "coordination-contract-001",
+  "title": "Create shared coordination contract",
+  "owner": "cassandra",
+  "state": "verifying",
+  "scope": "Add schemas, examples, and a validator on an isolated draft branch.",
+  "inputs": ["brain/JOB_EVENT_CONTRACT.md", "Amber operations audit", "Cassandra integration audit"],
+  "expected_output": "Draft PR containing a tested non-runtime coordination contract.",
+  "acceptance_tests": ["All examples pass validator", "Passed tasks require evidence", "Awaiting-Josh tasks require a manual step", "Retry count cannot exceed two"],
+  "evidence": [],
+  "cost": { "maximum_usd": 0, "actual_usd": 0 },
+  "permission_level": "branch_write",
+  "rollback": "Delete the isolated branch or close the draft PR; runtime is unchanged.",
+  "blocker": null,
+  "next_action": "Run validator and publish the isolated draft branch.",
+  "retry_count": 0,
+  "manual_step": null,
+  "updated_at": "2026-08-15T08:30:00Z"
+}
+
