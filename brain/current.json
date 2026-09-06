@@ -1,89 +1,151 @@
 {
-  "version": "Bridge V1 / Creative OS V28",
-  "updatedAt": "2026-08-13T02:24:03+00:00",
+  "sourceOfTruth": "joshcomstock9777-glitch/studio-behind-the-cast/STUDIO_BRAIN.md",
+  "branch": "main",
+  "snapshotOnly": true,
+  "updatedAt": "2026-09-05T21:00:00-04:00",
   "updatedBy": "Amber",
-  "summary": "Moonshadow Bridge V1 is the first deployed Bridge. Moonshadow Creative OS/editor Version 28 is a separate existing system and must be preserved. The Brain carries persistent operational memory. The Workbench carries notes and handoffs. The Task Book carries assignments and state. The Bridge carries live communication. A Checkpoint proves activity and synchronization. Planned systems and untested workers must never be reported as operational.",
-  "identity": {
-    "Josh": "Architect, Creator, and final decision-maker",
-    "Amber": "Studio Manager, intake router, and handoff custodian",
-    "Allie": "Creative partner, synthesis lead, and working partner",
-    "Artisa": "Editor and final QA gate",
-    "Slick": "Publisher and release gate",
-    "Tigra": "Social media manager",
-    "The Scout": "Runner and resource finder",
-    "Marketer": "Distribution and outreach lead"
+  "status": "READY FOR REVIEW",
+  "correctionPolicy": "STUDIO_BRAIN.md wins when this snapshot disagrees",
+  "repository": {
+    "owner": "joshcomstock9777-glitch",
+    "name": "studio-behind-the-cast",
+    "visibility": "PUBLIC",
+    "verification": "VERIFIED"
   },
-  "crew": [
-    { "name": "Josh", "role": "Architect & Creator", "verification": "UNVERIFIED" },
-    { "name": "Amber", "role": "Studio Operations / Intake", "verification": "UNVERIFIED" },
-    { "name": "Allie", "role": "Creative lead and synthesis", "verification": "UNVERIFIED" },
-    { "name": "Hallie", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
-    { "name": "Ro", "role": "RECOVERY REQUIRED", "verification": "UNVERIFIED" },
-    { "name": "Artisa", "role": "Editor and final QA", "verification": "UNVERIFIED" },
-    { "name": "Slick", "role": "Publisher and release gate", "verification": "UNVERIFIED" },
-    { "name": "Tigra", "role": "Social media manager", "verification": "UNVERIFIED" },
-    { "name": "The Scout", "role": "Runner and resource finder", "verification": "UNVERIFIED" },
-    { "name": "Marketer", "role": "Distribution and outreach", "verification": "UNVERIFIED" }
+  "roster": [
+    {
+      "name": "Josh",
+      "role": "Architect",
+      "status": "VERIFIED",
+      "lane": "Final creative authority, identity, vision, taste, approval"
+    },
+    {
+      "name": "Amber",
+      "role": "Studio Manager / Operational Custodian",
+      "status": "VERIFIED",
+      "lane": "Operations, assignments, verification, Brain, access map, handoffs"
+    },
+    {
+      "name": "Allie 2.0",
+      "role": "Primary Creative Partner",
+      "status": "REPORTED ACTIVE",
+      "lane": "Creative partnership and workbench"
+    },
+    {
+      "name": "Tigra",
+      "role": "Social Showrunner & Community Lead",
+      "status": "VERIFIED CHECK-IN",
+      "lane": "Social strategy, cultural radar, engagement, character voice, hooks, captions"
+    },
+    {
+      "name": "Slick",
+      "role": "Infrastructure Operator, Runner & Publishing Support",
+      "status": "VERIFIED ACTIVE IN GEMINI SPARK",
+      "lane": "Infrastructure, account readiness, technical handoffs, publishing preparation"
+    },
+    {
+      "name": "Artisa",
+      "role": "Master Visual & Pacing Editor",
+      "status": "VERIFIED CHECK-IN",
+      "lane": "Fine cuts, pacing, continuity, visual masters"
+    },
+    {
+      "name": "The Scout",
+      "role": "Free-tier & Resource Acquisition",
+      "status": "REPORTED",
+      "lane": "Tools, terms, limits, privacy, expiration"
+    },
+    {
+      "name": "Role / Erole",
+      "role": "Audio Specialist",
+      "status": "NAME PENDING VERIFICATION",
+      "lane": "Audio treatment, music, voice, mix"
+    },
+    {
+      "name": "Additional editors/designers",
+      "role": "Production collaborators",
+      "status": "REPORTED",
+      "lane": "Exact identities and access require check-in"
+    }
   ],
-  "systems": {
-    "brain": "PERSISTENT OPERATIONAL MEMORY",
-    "workbench": "LOCATION UNKNOWN — RECOVERY REQUIRED",
-    "taskBook": "LOCATION UNKNOWN — RECOVERY REQUIRED",
-    "bridge": "V1 REALTIME TRANSPORT OPERATIONAL — MESSAGE, CHECKPOINT, PRESENCE, AND SECOND-SESSION RETURN PATH PROVEN; WORKER DOORWAYS NOT YET VERIFIED",
-    "checkpoint": "FORMAT LOCKED"
-  },
-  "workflow": [
-    "Josh and Allie define the brief and final creative direction",
-    "Amber receives inbound calls, texts, and emails, then routes work",
-    "Artisa performs final edit, continuity, and quality review",
-    "Slick packages, double-checks, and releases the work",
-    "Tigra drafts and manages outbound social responses",
-    "The Scout gathers free tools, APIs, and resources",
-    "Marketer finds free distribution and outreach opportunities"
+  "assignments": [
+    {
+      "id": "SLI-001",
+      "owner": "Slick",
+      "assignment": "Read-only infrastructure and publishing-readiness audit",
+      "status": "ACTIVE",
+      "evidenceRequired": "Platform-by-platform evidence and official sources"
+    },
+    {
+      "id": "SLI-002",
+      "owner": "Slick",
+      "assignment": "Verify GitHub repository, branch, Brain path, and access",
+      "status": "ASSIGNED",
+      "evidenceRequired": "Remote read test of this file"
+    },
+    {
+      "id": "TIG-001",
+      "owner": "Tigra",
+      "assignment": "Cock Dracula / Everyday Vampire launch plan",
+      "status": "ASSIGNED",
+      "evidenceRequired": "3 series, 5 hooks, 7-day schedule, 10 replies, outreach, metrics"
+    },
+    {
+      "id": "CD-001",
+      "owner": "Artisa",
+      "assignment": "Identify exact Cock Dracula source files, durations, and best takes",
+      "status": "ASSIGNED",
+      "evidenceRequired": "Source-media manifest"
+    },
+    {
+      "id": "AUDIO-001",
+      "owner": "Role / Erole",
+      "assignment": "Audio-role check-in and capability audit",
+      "status": "BLOCKED",
+      "evidenceRequired": "Exact displayed name and verified check-in"
+    },
+    {
+      "id": "BRAIN-001",
+      "owner": "Amber",
+      "assignment": "Establish canonical GitHub Studio Brain",
+      "status": "COMPLETE",
+      "evidenceRequired": "This file on main"
+    },
+    {
+      "id": "BRAIN-002",
+      "owner": "Amber",
+      "assignment": "Record chain probe, corrections, and synchronized snapshot",
+      "status": "READY FOR REVIEW",
+      "evidenceRequired": "Journal entry plus brain/current.json on main"
+    }
   ],
-  "checkpointFormat": "NAME | ROLE | TASK | STATUS | LAST ACTION | BLOCKER | NEXT ACTION | BRAIN UPDATED: YES/NO",
-  "lockedRules": [
-    "Verify, do not assume",
-    "Do not merge Amber and Allie",
-    "Do not rename or redesign locked systems until original locations are recovered",
-    "No production work until the worker doorway passes",
-    "Shared memory is context, not live communication",
-    "Never expose credentials or secrets"
+  "chain": {
+    "missionControl": "OPERATOR BOARD — NOT THE EDITOR",
+    "brain": "READABLE",
+    "studioGoMediaParenting": "NOT VERIFIED",
+    "studioGoDuration": "UNPROBED CLIPS SHOW DURATION UNKNOWN AND CANNOT EXPORT",
+    "renderer": "NOT LIVE",
+    "overall": "BLOCKED",
+    "rejectedArtifact": {
+      "name": "cd_choice_cut_audio.mp4",
+      "status": "REJECTED",
+      "commissioned": false,
+      "published": false
+    },
+    "studioGoEvidence": {
+      "commit": "9dae694a30ea4ba6d063878b44e77aa5af406635",
+      "file": "docs/CHAIN_STATUS.md"
+    }
+  },
+  "rules": [
+    "Verify instead of assuming",
+    "Use VERIFIED, REPORTED, PENDING, UNKNOWN, or BLOCKED",
+    "Never record secrets",
+    "Never claim external action without evidence",
+    "Preserve source media and prior journal entries",
+    "Josh approves publishing, messaging, spending, deletion, account changes, third-party access, and other consequential external actions",
+    "Every collaborator reads the latest Brain entry and appends a handoff",
+    "Correct mistakes with a dated correction; never silently rewrite history"
   ],
-  "currentAssignments": {
-    "Josh + Allie": ["Define the creative brief", "Keep final creative authority"],
-    "Amber": ["Receive inbound communication", "Route work", "Track handoffs"],
-    "Artisa": ["Perform final edit and QA"],
-    "Slick": ["Package and release approved work"],
-    "Tigra": ["Draft social responses and monitor engagement"],
-    "The Scout": ["Find free tools, APIs, and bootstrap resources"],
-    "Marketer": ["Find free distribution and outreach opportunities"]
-  },
-  "proofOfConcept": {
-    "name": "2–7 Agent Workcell",
-    "objective": "Prove that two to seven bounded agents can coordinate through shared operational memory, assignments, handoffs, live messages, checkpoints, verification, and human escalation without drifting from the Architect's parameters.",
-    "minimumAgents": 2,
-    "maximumAgents": 7,
-    "firstPair": ["Amber", "Allie"],
-    "scaleRule": "Pass the complete protocol with two agents first, then add one verified worker at a time until the seven-agent workcell is proven.",
-    "evidenceRequired": [
-      "Review source and example configuration",
-      "Run npm install and npm run check locally",
-      "Add mock-adapter tests for A -> B -> A, duplicate delivery, invalid target, and loop cap",
-      "Create the new Cloudflare resources and record deployment and rollback notes",
-      "Test each private identity independently, then the automatic path"
-    ],
-    "status": "ALLIE/AMBER THREE-TURN PATH PROVEN — STUDIO WORKFLOW CHAIN UPDATED"
-  },
-  "bridgeProof": {
-    "testedAt": "2026-08-08T20:37:00-04:00",
-    "testedBy": "Amber",
-    "messageWrite": "PASSED",
-    "messageReturn": "PASSED",
-    "checkpointWrite": "PASSED",
-    "secondSessionRead": "PASSED",
-    "presence": "PASSED",
-    "allieDoorway": "NOT TESTED",
-    "workerVerification": "ALL WORKERS REMAIN UNVERIFIED"
-  }
+  "nextDecision": "Josh chooses Go duration probe or renderer health"
 }

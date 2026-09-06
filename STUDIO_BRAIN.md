@@ -35,7 +35,7 @@ This file is the Studio's canonical operational memory. It records verified iden
 | Josh | Architect | VERIFIED | Final creative authority, identity, vision, taste, approval |
 | Amber | Studio Manager / Operational Custodian | VERIFIED | Operations, assignments, verification, Brain, access map, handoffs |
 | Allie 2.0 | Primary Creative Partner | REPORTED ACTIVE | Creative partnership and workbench |
-| Tigera | Social Showrunner & Community Lead | VERIFIED CHECK-IN | Social strategy, cultural radar, engagement, character voice, hooks, captions |
+| Tigra | Social Showrunner & Community Lead | VERIFIED CHECK-IN | Social strategy, cultural radar, engagement, character voice, hooks, captions |
 | Slick | Infrastructure Operator, Runner & Publishing Support | VERIFIED ACTIVE IN GEMINI SPARK | Infrastructure, account readiness, technical handoffs, publishing preparation |
 | Artisa | Master Visual & Pacing Editor | VERIFIED CHECK-IN | Fine cuts, pacing, continuity, visual masters |
 | The Scout | Free-tier & Resource Acquisition | REPORTED | Tools, terms, limits, privacy, expiration |
@@ -58,6 +58,7 @@ A biography is not proof of access. Verify access with a harmless read-only test
 | CD-001 | Artisa | Identify exact Cock Dracula source files, durations, and best takes | ASSIGNED | Source-media manifest |
 | AUDIO-001 | Role / Erole | Audio-role check-in and capability audit | BLOCKED | Exact displayed name and verified check-in |
 | BRAIN-001 | Amber | Establish canonical GitHub Studio Brain | COMPLETE | This file on `main` |
+| BRAIN-002 | Amber | Record chain probe, corrections, and synchronized snapshot | READY FOR REVIEW | Journal entry plus `brain/current.json` on `main` |
 
 Allowed statuses: **ASSIGNED**, **ACTIVE**, **READY FOR REVIEW**, **APPROVED**, **COMPLETE**, **BLOCKED**, **DEFERRED**.
 
@@ -81,7 +82,7 @@ This chain is the studio-facing proof-of-concept list. It is separate from the q
 |---|---|
 | Owner | `joshcomstock9777-glitch` |
 | Repository | `studio-behind-the-cast` |
-| Visibility | Private |
+| Visibility | Public |
 | Default branch | `main` |
 | ChatGPT/Codex GitHub App | Installed |
 | Selected repository | Only `studio-behind-the-cast` |
@@ -130,3 +131,15 @@ An API key is not publishing access. Verify each capability separately.
 **BLOCKERS:** Separate AI systems do not automatically share memory. Each collaborator must receive this path and prove access.  
 **RECOMMENDED NEXT ACTION:** Slick performs a remote read test of `STUDIO_BRAIN.md` and appends his verified handoff through an approved workflow.  
 **JOSH DECISION REQUIRED:** NO
+
+### 2026-09-05 ~21:00 ET — Amber — BRAIN-002
+
+**STATUS:** READY FOR REVIEW  
+**WHAT WAS COMPLETED:** Recorded the front-to-back commissioning probe; recorded Josh's rejection of the chat-sandbox cut `cd_choice_cut_audio.mp4`; recorded Studio Go's duration-honesty correction; corrected current repository visibility and the current roster spelling from Tigera to Tigra; synchronized `brain/current.json` to this canonical Markdown state. Mission Control remains an operator board, not the Editor.  
+**EVIDENCE / FILE LOCATION:** `main/STUDIO_BRAIN.md`; `main/brain/current.json`; `joshcomstock9777-glitch/moonshadow-studio-go@9dae694a30ea4ba6d063878b44e77aa5af406635`; `docs/CHAIN_STATUS.md`.  
+**TOOLS USED:** Authenticated GitHub repository metadata, file reads, branch reads, and atomic Git data commit.  
+**WHAT WAS VERIFIED:** CORRECTION 2026-09-05 — repository visibility is VERIFIED PUBLIC; earlier statements that it was private remain preserved as historical entries. CORRECTION 2026-09-05 — the current canonical spelling is Tigra; the prior current-roster spelling “Tigera” was stale. The canonical Markdown and prior JSON snapshot did not match, so the Markdown won. The Brain is readable. Studio Go does not parent real media. Unprobed clips show DURATION UNKNOWN and cannot export after commit `9dae694a30ea4ba6d063878b44e77aa5af406635`. The renderer is not live. The end-to-end chain remains BLOCKED. The sandbox cut is REJECTED, NOT commissioned, and NOT published. No publication occurred.  
+**WHAT REMAINS:** CD-001 remains ASSIGNED because no real Artisa source-media manifest was provided. Josh must choose which crew lane opens next: Go duration probe or renderer health.  
+**BLOCKERS:** No verified real-media parenting/duration probe in Studio Go; renderer not live; no Artisa source manifest for CD-001. No fact was invented to make the chain green.  
+**RECOMMENDED NEXT ACTION:** Hold both crew lanes until Josh selects Go duration probe or renderer health.  
+**JOSH DECISION REQUIRED:** YES — choose the next crew lane: Go duration probe or renderer health.
