@@ -2,7 +2,7 @@ import { getAssetStorageConfig, persistAssetRecord } from "./asset-storage";
 
 type RendererConfig = {
   workerUrl: string;
-  workerToken?: string;
+  workerToken: string;
 };
 
 export interface RenderRequestInput {
@@ -15,7 +15,7 @@ export interface RenderRequestInput {
 export function getRendererConfig(): RendererConfig | null {
   const workerUrl = process.env.RENDERER_WORKER_URL?.trim().replace(/\/+$/, "");
   const workerToken = process.env.RENDERER_WORKER_TOKEN?.trim();
-  if (!workerUrl) return null;
+  if (!workerUrl || !workerToken) return null;
   return { workerUrl, workerToken };
 }
 
@@ -33,12 +33,22 @@ export async function probeRenderer(config: RendererConfig) {
         message: `Renderer worker health returned HTTP ${response.status}.`,
       };
     }
-    const body = (await response.json()) as { connected?: unknown; backend?: unknown; message?: unknown };
-    if (body.connected !== true) {
+    const body = (await response.json()) as {
+      connected?: unknown;
+      tokenConfigured?: unknown;
+      backend?: unknown;
+      message?: unknown;
+    };
+    if (body.connected !== true || body.tokenConfigured !== true) {
       return {
         connected: false,
         backend: typeof body.backend === "string" ? body.backend : "renderer-worker",
-        message: typeof body.message === "string" ? body.message : "Renderer worker did not confirm connectivity.",
+        message:
+          body.connected === true && body.tokenConfigured !== true
+            ? "Renderer worker did not confirm authenticated operation."
+            : typeof body.message === "string"
+              ? body.message
+              : "Renderer worker did not confirm connectivity.",
       };
     }
     return {
@@ -108,9 +118,7 @@ export async function renderAndPersist(config: RendererConfig, input: RenderRequ
 }
 
 function rendererHeaders(config: RendererConfig): Record<string, string> {
-  const headers: Record<string, string> = {};
-  if (config.workerToken) headers.Authorization = `Bearer ${config.workerToken}`;
-  return headers;
+  return { Authorization: `Bearer ${config.workerToken}` };
 }
 
 function validateRenderInput(input: RenderRequestInput) {
