@@ -1,0 +1,22 @@
+{
+  "schema": "moonshadow.coordination.task.v1",
+  "task_id": "PATH-PROOF-001",
+  "correlation_id": "path-proof-preview-001",
+  "title": "Verify provider-neutral Path preview",
+  "owner": "allie",
+  "state": "verifying",
+  "scope": "Verify the isolated preview without touching Bridge V1 or production.",
+  "inputs": ["repo:studio-behind-the-cast", "branch:port/provider-neutral-path", "commit:56b6067"],
+  "expected_output": "One evidence-backed PASS, FAIL, or blocker card.",
+  "acceptance_tests": ["Preview builds", "POST creates one session", "Polling reaches terminal state", "Correlation ID remains unchanged", "Allie-Amber-Allie order has no fourth call"],
+  "evidence": ["local build: 4 steps, 1 workflow"],
+  "cost": { "maximum_usd": 0, "actual_usd": 0 },
+  "permission_level": "branch_write",
+  "rollback": "Return to the previous Ready preview deployment; do not merge.",
+  "blocker": "Newest Vercel preview still requires independent verification.",
+  "next_action": "Verify the newest preview deployment and run one browser proof.",
+  "retry_count": 0,
+  "manual_step": { "objective": "Run one proof from the newest Ready preview.", "success_signal": "A terminal transcript with one unchanged correlation ID.", "screenshot_clue": "Result card or the first red runtime log entry." },
+  "updated_at": "2026-08-15T08:30:00Z"
+}
+

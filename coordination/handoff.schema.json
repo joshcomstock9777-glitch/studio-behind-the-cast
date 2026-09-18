@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonshadow.local/coordination/handoff.schema.json",
+  "title": "Moonshadow Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "handoff_id", "task_id", "correlation_id", "from", "to", "status", "summary", "evidence_refs", "blocker", "requested_action", "created_at"],
+  "properties": {
+    "schema": { "const": "moonshadow.coordination.handoff.v1" },
+    "handoff_id": { "type": "string", "minLength": 1 },
+    "task_id": { "type": "string", "minLength": 1 },
+    "correlation_id": { "type": "string", "minLength": 1 },
+    "from": { "enum": ["allie", "amber", "cassandra", "josh"] },
+    "to": { "enum": ["allie", "amber", "cassandra", "josh"] },
+    "status": { "enum": ["complete", "blocked", "needs_verification", "needs_decision"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "evidence_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "blocker": { "type": ["string", "null"] },
+    "requested_action": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" }
+  }
+}
+
