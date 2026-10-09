@@ -53,7 +53,7 @@ async function generate(identity: Identity, envelope: PathEnvelope, transcript: 
         }
       ],
       temperature: 0.3,
-      max_tokens: 700
+      max_tokens: 8000
     })
   });
 
