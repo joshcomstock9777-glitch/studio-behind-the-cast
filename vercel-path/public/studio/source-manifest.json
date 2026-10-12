@@ -1,0 +1,12 @@
+{
+  "repository": "joshcomstock9777-glitch/moonshadow-studio-go",
+  "sourceCommit": "e6ceebd6a9567e0e26ee14aefba14ffcc2c02ead",
+  "builtAt": "2026-10-12",
+  "apiOrigin": "same origin",
+  "scope": "Script workspace preview; no production release",
+  "files": {
+    "_expo/static/js/web/index-7e30a2ce1f55ed3161041c71548624a3.js": "bf06ba3a7cdfe71e6b8b4b2291ca965dba08b5a8e2a84059100332287f8e80ea",
+    "index.html": "3acfa328dac7690c55314c33afabf3b8f7332592d1f9190864c88461320f81dc",
+    "metadata.json": "aa5f19cc84d41c0f8c70ececb2bc82e863227ea1e121632aca879eb616056991"
+  }
+}

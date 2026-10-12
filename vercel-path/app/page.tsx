@@ -42,6 +42,7 @@ export default function Page() {
     <main style={{ fontFamily: "system-ui", maxWidth: 760, margin: "40px auto", padding: 24 }}>
       <h1>Moonshadow Path proof</h1>
       <p>Private transport test. Makes live AI model calls (Allie → Amber → Allie).</p>
+      <p><a href="/studio/index.html">Open Studio Go — script workspace preview</a></p>
       <button onClick={runProof} style={{ padding: "12px 18px", fontSize: 16 }}>Run Allie → Amber → Allie proof</button>
       <h2>{state}</h2>
       {proof && <pre style={{ whiteSpace: "pre-wrap", background: "#111", color: "#eee", padding: 16 }}>{JSON.stringify(proof, null, 2)}</pre>}
