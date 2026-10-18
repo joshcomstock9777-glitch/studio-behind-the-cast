@@ -10,7 +10,7 @@ let db,user,listenersStarted=false;
 const el=id=>document.getElementById(id);
 el("session-id").textContent=sessionId.slice(0,8);
 
-function escapeHtml(value=""){return String(value).replace(/[&<>\"']/g,c=>({"&":"&","<":"<",">":">","\"":""","'":"&#39;"}[c]));}
+function escapeHtml(value=""){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 function setStatus(title,detail,online=false){el("status-title").textContent=title;el("status-detail").textContent=detail;el("status-dot").classList.toggle("online",online);}
 function stamp(){el("last-sync").textContent=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit",second:"2-digit"});}
 function when(value){return new Date(value||Date.now()).toLocaleString([],{dateStyle:"short",timeStyle:"medium"});}
